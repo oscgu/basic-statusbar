@@ -5,6 +5,7 @@
 #include <time.h>
 #include <X11/Xlib.h>
 
+static void getLoadAvg();
 static void getDateTime();
 static void getMem();
 void setroot();
@@ -52,8 +53,26 @@ getMem()
 }
 
 void
+getLoadAvg()
+{
+        char result[10] = " 🖥️";
+        int n = 5;
+        int i;
+
+        FILE *file = fopen("/proc/loadavg", "r");
+        
+        while ((i = fgetc(file)) != ' ')
+        {
+                result[n++] = (char) i;
+        }
+        fclose(file);
+        strcat(statusbar, result);
+}
+
+void
 setroot()
 {
+        getLoadAvg();
         getMem();
         getDateTime();
 
