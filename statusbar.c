@@ -1,10 +1,12 @@
 #include <unistd.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <X11/Xlib.h>
 
+static void getCpuLoad();
 static void getLoadAvg();
 static void getDateTime();
 static void getMem();
@@ -14,6 +16,8 @@ static Display *dpy;
 static int screen;
 static Window root;
 static char statusbar[256] = "";
+static int cpuWorkCache = 0;
+long static int cpuTotalCache = 0;
 
 void
 getDateTime()
@@ -70,8 +74,48 @@ getLoadAvg()
 }
 
 void
+getCpuLoad()
+{
+        long int cpuTotal = 0;
+        long int cpuWork = 0;
+        int i=0;
+
+        char result[20];
+        char line[1][128];
+
+        FILE *file = fopen("/proc/stat", "r");
+
+        fgets(line[0], 100, file);
+        line[0][strlen(line[0]) - 1] = '\0';
+        fclose(file);
+
+        char *token = strtok(line[0], " ");
+
+        while (token != NULL)
+        {
+                i++;
+                token = strtok(NULL, " ");
+                if (i>0 && i<7)
+                {
+                        cpuTotal += atoi(token);
+                }
+                if (i>0 && i<4)
+                {
+                        cpuWork += atoi(token);
+                }
+        }
+        float cpuLoad = fabs((float)(cpuWork - cpuWorkCache) / (float)(cpuTotal - cpuTotalCache) * 100);
+
+        sprintf(result, " %s%.2f%%",  cpuLoad < 60 ? "🧊": "🔥", cpuLoad );
+        strcat(statusbar, result);
+        cpuWorkCache = cpuWork;
+        cpuTotalCache = cpuTotal;
+}
+
+void
 setroot()
 {
+        getCpuLoad();
         getLoadAvg();
         getMem();
         getDateTime();
