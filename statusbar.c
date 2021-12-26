@@ -6,12 +6,14 @@
 #include <time.h>
 #include <X11/Xlib.h>
 
+/* function declarations */
 static void getCpuLoad();
 static void getLoadAvg();
 static void getDateTime();
 static void getMem();
 static void setroot();
 
+/* variables */
 static Display *dpy;
 static int screen;
 static Window root;
@@ -19,6 +21,8 @@ static char statusbar[256] = "";
 static int cpuWorkCache = 0;
 long static int cpuTotalCache = 0;
 
+
+/* function implementations */
 void
 getDateTime()
 {
@@ -136,6 +140,6 @@ main()
         for (;;) {
                 memset(&statusbar[0], 0, sizeof(statusbar));
                 setroot();
-                sleep(1);
+                sleep(10);
         }
 }
