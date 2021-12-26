@@ -10,7 +10,7 @@ static void getCpuLoad();
 static void getLoadAvg();
 static void getDateTime();
 static void getMem();
-void setroot();
+static void setroot();
 
 static Display *dpy;
 static int screen;
