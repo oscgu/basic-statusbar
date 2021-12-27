@@ -5,7 +5,9 @@
 #include <unistd.h>
 #include "modules.h"
 
+/* function declarations */
 static void setroot();
+
 /* variables */
 static Display *dpy;
 static int screen;
@@ -16,15 +18,15 @@ char dateTime[35];
 char memUsage[12];
 char loadAvg[10];
 char cpuCurrentLoad[20];
-static long int cpuWorkCache = 0;
-static long int cpuTotalCache = 0;
+long int cpuWorkCache = 0;
+long int cpuTotalCache = 0;
 
 /* function implementations */
-
 void
 setroot()
 {
         getCpuLoad(cpuCurrentLoad, &cpuWorkCache, &cpuTotalCache);
+        printf("%ld %ld\n", cpuWorkCache, cpuTotalCache);
         getLoadAvg(loadAvg);
         getMem(memUsage);
         getDateTime(dateTime);
@@ -42,6 +44,7 @@ setroot()
         if (d) {
                 dpy = d;
         }
+
         screen = DefaultScreen(dpy);
         root = RootWindow(dpy, screen);
         XStoreName(dpy, root, status);
