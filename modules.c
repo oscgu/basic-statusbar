@@ -9,7 +9,7 @@ getDateTime(char *dateTime)
 {
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-        sprintf(dateTime, " %s%d:%d 🗓️%d-%d-%d",t->tm_hour >= 22 ? "🌙" : "🌞",  t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon, t->tm_year);
+        sprintf(dateTime, " %s%02d:%02d %s%d-%d-%d",t->tm_hour >= 22 ? "🌙" : "🌞",  t->tm_hour, t->tm_min,(t->tm_mon + 1) == 12 ? "🎄" : "🗓️", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
 }
 
 void
