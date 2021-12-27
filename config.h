@@ -1,0 +1,1 @@
+/* Config file for setting up the statusbar */
