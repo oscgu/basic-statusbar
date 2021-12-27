@@ -9,7 +9,7 @@ getDateTime(char *dateTime)
 {
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-        strftime(dateTime, 35, " ⌛%H:%M 🗓️%d-%m-%Y", t);
+        sprintf(dateTime, " %s%d:%d 🗓️%d-%d-%d",t->tm_hour >= 22 ? "🌙" : "🌞",  t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon, t->tm_year);
 }
 
 void
@@ -21,6 +21,10 @@ getMem(char *memUsage)
         int memAvailable = 0;
 
         FILE *file = fopen("/proc/meminfo", "r");
+        if (file == NULL)
+        {
+                return;
+        }
 
         while (fscanf(file, " %1023s", buffer) == 1)
         {
@@ -46,6 +50,10 @@ getLoadAvg(char *loadavg)
         int i;
 
         FILE *file = fopen("/proc/loadavg", "r");
+        if (file == NULL)
+        {
+                return;
+        }
         
         while ((i = fgetc(file)) != ' ')
         {
@@ -66,6 +74,10 @@ getCpuLoad(char *cpuCurrentLoad, long int *cpuWorkCache, long int *cpuTotalCache
         char line[1][128];
 
         FILE *file = fopen("/proc/stat", "r");
+        if (file == NULL)
+        {
+                return;
+        }
 
         fgets(line[0], 100, file);
         line[0][strlen(line[0]) - 1] = '\0';
@@ -88,7 +100,7 @@ getCpuLoad(char *cpuCurrentLoad, long int *cpuWorkCache, long int *cpuTotalCache
         }
         float cpuLoad = fabs((float)(cpuWork - *cpuWorkCache) / (float)(cpuTotal - *cpuTotalCache) * 100);
 
-        sprintf(cpuCurrentLoad, " %s%.2f%%",  cpuLoad < 60 ? "🧊": "🔥", cpuLoad );
+        sprintf(cpuCurrentLoad, " %s%.2f%%",  cpuLoad <= 30 ? "🧊": cpuLoad < 80 ? "🔥" : "🧯", cpuLoad );
         *cpuWorkCache = cpuWork;
         *cpuTotalCache = cpuTotal;
 }
