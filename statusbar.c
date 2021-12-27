@@ -26,13 +26,11 @@ void
 setroot()
 {
         getCpuLoad(cpuCurrentLoad, &cpuWorkCache, &cpuTotalCache);
-        printf("%ld %ld\n", cpuWorkCache, cpuTotalCache);
         getLoadAvg(loadAvg);
         getMem(memUsage);
         getDateTime(dateTime);
 
         int totalSize = strlen(dateTime) + strlen(memUsage) + strlen(loadAvg) + strlen(cpuCurrentLoad) + 1;
-
         char *status = (char *) malloc(totalSize);
 
         strcpy(status, cpuCurrentLoad);
