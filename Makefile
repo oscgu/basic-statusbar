@@ -2,4 +2,4 @@ CXX = cc
 CFLAGS = -lX11
 
 statusbar: statusbar.c 
-	$(CXX) -o statusbar statusbar.c $(CFLAGS)
+	$(CXX) -o statusbar statusbar.c modules.c $(CFLAGS)

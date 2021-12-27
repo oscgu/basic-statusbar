@@ -5,11 +5,11 @@
 #include <time.h>
 
 void
-getDateTime(char *dateTime, char *statusbar)
+getDateTime(char *dateTime)
 {
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-        strftime(dateTime, sizeof(statusbar), " ⌛%H:%M 🗓️%d-%m-%Y", t);
+        strftime(dateTime, 35, " ⌛%H:%M 🗓️%d-%m-%Y", t);
 }
 
 void
@@ -39,7 +39,7 @@ getMem(char *memUsage)
 }
 
 void
-getLoadAvg(char *statusbar)
+getLoadAvg(char *loadavg)
 {
         char result[10] = " 🖥️";
         int n = 5;
@@ -52,11 +52,11 @@ getLoadAvg(char *statusbar)
                 result[n++] = (char) i;
         }
         fclose(file);
-        strcat(statusbar, result);
+        strcpy(loadavg, result);
 }
 
 void
-getCpuLoad(char *cpuCurrentLoad, long int cpuWorkCache, long int cpuTotalCache)
+getCpuLoad(char *cpuCurrentLoad, long int *cpuWorkCache, long int *cpuTotalCache)
 {
         long int cpuTotal = 0;
         long int cpuWork = 0;
@@ -86,9 +86,9 @@ getCpuLoad(char *cpuCurrentLoad, long int cpuWorkCache, long int cpuTotalCache)
                         cpuWork += atoi(token);
                 }
         }
-        float cpuLoad = fabs((float)(cpuWork - cpuWorkCache) / (float)(cpuTotal - cpuTotalCache) * 100);
+        float cpuLoad = fabs((float)(cpuWork - *cpuWorkCache) / (float)(cpuTotal - *cpuTotalCache) * 100);
 
         sprintf(cpuCurrentLoad, " %s%.2f%%",  cpuLoad < 60 ? "🧊": "🔥", cpuLoad );
-        cpuWorkCache = cpuWork;
-        cpuTotalCache = cpuTotal;
+        *cpuWorkCache = cpuWork;
+        *cpuTotalCache = cpuTotal;
 }

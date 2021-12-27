@@ -3,42 +3,33 @@
 #include <string.h>
 #include <X11/Xlib.h>
 #include <unistd.h>
-#include "config.h"
 #include "modules.h"
 
-/* function declarations */
-void getCpuLoad();
-void getLoadAvg();
-void getDateTime();
-void getMem();
-void setroot();
-
+static void setroot();
 /* variables */
 static Display *dpy;
 static int screen;
 static Window root;
-static char statusbar[256] = "";
-static int cpuWorkCache = 0;
-long static int cpuTotalCache = 0;
 
 /* Caches */
-char dateTime[25];
+char dateTime[35];
 char memUsage[12];
 char loadAvg[10];
 char cpuCurrentLoad[20];
+static long int cpuWorkCache = 0;
+static long int cpuTotalCache = 0;
 
 /* function implementations */
 
 void
 setroot()
 {
-        getCpuLoad(&cpuCurrentLoad);
-        getLoadAvg(&loadAvg);
-        getMem(&memUsage);
-        getDateTime(&dateTime);
+        getCpuLoad(cpuCurrentLoad, &cpuWorkCache, &cpuTotalCache);
+        getLoadAvg(loadAvg);
+        getMem(memUsage);
+        getDateTime(dateTime);
 
         int totalSize = strlen(dateTime) + strlen(memUsage) + strlen(loadAvg) + strlen(cpuCurrentLoad) + 1;
-        printf("%d\n", totalSize);
 
         char *status = (char *) malloc(totalSize);
 
