@@ -9,7 +9,7 @@ getDateTime(char *dateTime)
 {
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-        sprintf(dateTime, " %s%02d:%02d %s%d-%d-%d",t->tm_hour >= 22 ? "🌙" : "🌞",  t->tm_hour, t->tm_min,(t->tm_mon + 1) == 12 ? "🎄" : "🗓️", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+        sprintf(dateTime, " %s%02d:%02d %s%d-%d-%d",t->tm_hour >= 22 ? "🌙" : t->tm_hour < 12 ? "☕" :"🌞",  t->tm_hour, t->tm_min,(t->tm_mon + 1) == 12 ? "🎄" : "🗓️", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
 }
 
 void
@@ -108,6 +108,6 @@ getCpuTemp(char *cpuTemp)
         if (file == NULL) return;
 
         fscanf(file, "%d", &temperatue);
-        sprintf(cpuTemp, " %s%d", temperatue / 1000 <= 30 ? "🧊": temperatue < 80 ? "🌡️" : "🔥", temperatue);
+        sprintf(cpuTemp, " %s%d", temperatue / 1000 <= 30 ? "🧊": temperatue < 80 ? "🌡️" : "🔥", temperatue / 1000);
         fclose(file);
 }

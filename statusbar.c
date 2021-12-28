@@ -5,6 +5,15 @@
 #include <unistd.h>
 #include "modules.h"
 
+/* structs */
+typedef struct {
+        void (*func)(char *);
+        char symbol[10];
+} Module;
+
+/* config file */
+#include "config.h"
+
 /* function declarations */
 static void setroot();
 
@@ -30,7 +39,12 @@ setroot()
         getLoadAvg(loadAvg);
         getMem(memUsage);
         getDateTime(dateTime);
-        getCpuTemp(cpuTemp);
+
+        modules[0].func(cpuTemp);
+
+
+        printf("%s", modules[0].symbol);
+        //getCpuTemp(cpuTemp);
 
         int totalSize = strlen(dateTime) + strlen(memUsage) + strlen(loadAvg) + strlen(cpuCurrentLoad) + strlen(cpuTemp) + 1;
         char *status = (char *) malloc(totalSize);
