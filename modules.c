@@ -21,10 +21,7 @@ getMem(char *memUsage)
         int memAvailable = 0;
 
         FILE *file = fopen("/proc/meminfo", "r");
-        if (file == NULL)
-        {
-                return;
-        }
+        if (file == NULL) return;
 
         while (fscanf(file, " %1023s", buffer) == 1)
         {
@@ -50,10 +47,7 @@ getLoadAvg(char *loadavg)
         int i;
 
         FILE *file = fopen("/proc/loadavg", "r");
-        if (file == NULL)
-        {
-                return;
-        }
+        if (file == NULL) return;
         
         while ((i = fgetc(file)) != ' ')
         {
@@ -103,4 +97,17 @@ getCpuLoad(char *cpuCurrentLoad, long int *cpuWorkCache, long int *cpuTotalCache
         sprintf(cpuCurrentLoad, " %s%.2f%%",  cpuLoad <= 30 ? "🧊": cpuLoad < 80 ? "🔥" : "🧯", cpuLoad );
         *cpuWorkCache = cpuWork;
         *cpuTotalCache = cpuTotal;
+}
+
+void
+getCpuTemp(char *cpuTemp)
+{
+        int temperatue = 0;
+
+        FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
+        if (file == NULL) return;
+
+        fscanf(file, "%d", &temperatue);
+        sprintf(cpuTemp, " %s%d", temperatue / 1000 <= 30 ? "🧊": temperatue < 80 ? "🌡️" : "🔥", temperatue);
+        fclose(file);
 }

@@ -20,6 +20,7 @@ char loadAvg[10];
 char cpuCurrentLoad[20];
 long int cpuWorkCache = 0;
 long int cpuTotalCache = 0;
+char cpuTemp[10];
 
 /* function implementations */
 void
@@ -29,11 +30,13 @@ setroot()
         getLoadAvg(loadAvg);
         getMem(memUsage);
         getDateTime(dateTime);
+        getCpuTemp(cpuTemp);
 
-        int totalSize = strlen(dateTime) + strlen(memUsage) + strlen(loadAvg) + strlen(cpuCurrentLoad) + 1;
+        int totalSize = strlen(dateTime) + strlen(memUsage) + strlen(loadAvg) + strlen(cpuCurrentLoad) + strlen(cpuTemp) + 1;
         char *status = (char *) malloc(totalSize);
 
-        strcpy(status, cpuCurrentLoad);
+        strcpy(status, cpuTemp);
+        strcat(status, cpuCurrentLoad);
         strcat(status, memUsage);
         strcat(status, loadAvg);
         strcat(status, dateTime);
