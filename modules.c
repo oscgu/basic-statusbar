@@ -4,6 +4,10 @@
 #include <string.h>
 #include <time.h>
 
+/* variables */
+long int cpuWorkCache = 0;
+long int cpuTotalCache = 0;
+
 void
 getDateTime(char *dateTime)
 {
@@ -58,7 +62,7 @@ getLoadAvg(char *loadavg)
 }
 
 void
-getCpuLoad(char *cpuCurrentLoad, long int *cpuWorkCache, long int *cpuTotalCache)
+getCpuLoad(char *cpuCurrentLoad)
 {
         long int cpuTotal = 0;
         long int cpuWork = 0;
@@ -92,11 +96,11 @@ getCpuLoad(char *cpuCurrentLoad, long int *cpuWorkCache, long int *cpuTotalCache
                         cpuWork += atoi(token);
                 }
         }
-        float cpuLoad = fabs((float)(cpuWork - *cpuWorkCache) / (float)(cpuTotal - *cpuTotalCache) * 100);
+        float cpuLoad = fabs((float)(cpuWork - cpuWorkCache) / (float)(cpuTotal - cpuTotalCache) * 100);
 
         sprintf(cpuCurrentLoad, " %s%.2f%%",  cpuLoad <= 30 ? "🧊": cpuLoad < 80 ? "🔥" : "🧯", cpuLoad );
-        *cpuWorkCache = cpuWork;
-        *cpuTotalCache = cpuTotal;
+        cpuWorkCache = cpuWork;
+        cpuTotalCache = cpuTotal;
 }
 
 void

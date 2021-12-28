@@ -27,24 +27,17 @@ char dateTime[35];
 char memUsage[12];
 char loadAvg[10];
 char cpuCurrentLoad[20];
-long int cpuWorkCache = 0;
-long int cpuTotalCache = 0;
 char cpuTemp[10];
 
 /* function implementations */
 void
 setroot()
 {
-        getCpuLoad(cpuCurrentLoad, &cpuWorkCache, &cpuTotalCache);
-        getLoadAvg(loadAvg);
-        getMem(memUsage);
-        getDateTime(dateTime);
-
         modules[0].func(cpuTemp);
-
-
-        printf("%s", modules[0].symbol);
-        //getCpuTemp(cpuTemp);
+        modules[1].func(cpuCurrentLoad);
+        modules[2].func(loadAvg);
+        modules[3].func(memUsage);
+        modules[4].func(dateTime);
 
         int totalSize = strlen(dateTime) + strlen(memUsage) + strlen(loadAvg) + strlen(cpuCurrentLoad) + strlen(cpuTemp) + 1;
         char *status = (char *) malloc(totalSize);
