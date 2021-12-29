@@ -1,5 +1,5 @@
-void getDateTime(char *dateTime);
-void getMem(char *memUsage);
-void getLoadAvg(char *loadAvg);
-void getCpuLoad(char *cpuCurrentLoad);
-void getCpuTemp(char *cpuTemp);
+char *getDateTime(void);
+char *getMem(void);
+char *getLoadAvg(void);
+char *getCpuLoad(void);
+char *getCpuTemp(void);

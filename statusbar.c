@@ -5,9 +5,12 @@
 #include <unistd.h>
 #include "modules.h"
 
+/* macros */
+#define LENGTH(X)       (sizeof X / sizeof X[0])
+
 /* structs */
 typedef struct {
-        void (*func)(char *);
+        char *(*func)(void);
         char symbol[10];
 } Module;
 
@@ -22,36 +25,25 @@ static Display *dpy;
 static int screen;
 static Window root;
 
-/* Caches */
-char dateTime[35];
-char memUsage[12];
-char loadAvg[10];
-char cpuCurrentLoad[20];
-char cpuTemp[10];
-
 /* function implementations */
 void
 setroot()
 {
-        modules[0].func(cpuTemp);
-        modules[1].func(cpuCurrentLoad);
-        modules[2].func(loadAvg);
-        modules[3].func(memUsage);
-        modules[4].func(dateTime);
+        unsigned int i;
+        char *status = (char *) malloc(sizeof(char) * 256);
 
-        int totalSize = strlen(dateTime) + strlen(memUsage) + strlen(loadAvg) + strlen(cpuCurrentLoad) + strlen(cpuTemp) + 1;
-        char *status = (char *) malloc(totalSize);
-
-        strcpy(status, cpuTemp);
-        strcat(status, cpuCurrentLoad);
-        strcat(status, memUsage);
-        strcat(status, loadAvg);
-        strcat(status, dateTime);
+        for (i=0; i<LENGTH(modules); i++)
+        {
+                if (i==0) {
+                        strcpy(status, modules[i].func());
+                        continue;
+                }
+                strcat(status, modules[i].func());
+                free(modules[i].func());
+        }
 
         Display *d = XOpenDisplay(NULL);
-        if (d) {
-                dpy = d;
-        }
+        if (d) dpy = d;
 
         screen = DefaultScreen(dpy);
         root = RootWindow(dpy, screen);
