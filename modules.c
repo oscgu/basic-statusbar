@@ -23,7 +23,6 @@ char *
 getMem(void)
 {
         char buffer[1024] = "";
-        char result[12];
         char *memUsage = malloc(sizeof(char) * 12);
         int memTotal = 0;
         int memAvailable = 0;
