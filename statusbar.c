@@ -34,7 +34,6 @@ setroot()
         for (i=0; i<LENGTH(modules); i++)
         {
                 char *text = modules[i].func();
-                printf("%s\n", text);
                 if (i==0) {
                         strcpy(status, text);
                         free(text);
