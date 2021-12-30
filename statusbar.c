@@ -11,7 +11,6 @@
 /* structs */
 typedef struct {
         char *(*func)(void);
-        char symbol[10];
 } Module;
 
 /* config file */
@@ -30,16 +29,19 @@ void
 setroot()
 {
         unsigned int i;
-        char *status = (char *) malloc(sizeof(char) * 256);
+        char *status = malloc(sizeof(char) * 256);
 
         for (i=0; i<LENGTH(modules); i++)
         {
+                char *text = modules[i].func();
+                printf("%s\n", text);
                 if (i==0) {
-                        strcpy(status, modules[i].func());
+                        strcpy(status, text);
+                        free(text);
                         continue;
                 }
-                strcat(status, modules[i].func());
-                free(modules[i].func());
+                strcat(status, text);
+                free(text);
         }
 
         Display *d = XOpenDisplay(NULL);

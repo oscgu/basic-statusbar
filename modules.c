@@ -9,7 +9,7 @@ long int cpuWorkCache = 0;
 long int cpuTotalCache = 0;
 
 char *
-getDateTime()
+getDateTime(void)
 {
         char *dateTime = malloc(35);
         time_t now = time(NULL);
@@ -111,7 +111,7 @@ getCpuLoad(void)
 }
 
 char *
-getCpuTemp()
+getCpuTemp(void)
 {
         int temperatue = 0;
         char *cpuTemp = malloc(sizeof(char) * 20);
