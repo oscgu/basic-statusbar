@@ -1,5 +1,6 @@
-CXX = cc
-CFLAGS = -lX11 -std=c99 -pedantic
+OBJ = statusbar.c modules.c 
+CC = cc
+CFLAGS = -lX11 -std=c99 -pedantic -Wall
 
-statusbar: statusbar.c modules.c config.h
-	$(CXX) -o statusbar statusbar.c modules.c $(CFLAGS)
+statusbar: ${OBJ}
+	${CC} -o $@ ${OBJ} $(CFLAGS)
