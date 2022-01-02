@@ -3,24 +3,29 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "modules.h"
 
 /* variables */
 long int cpuWorkCache = 0;
 long int cpuTotalCache = 0;
 
+/* function declarations */
+static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, float formatVal);
+
+/* function implementations */
 char *
-getDateTime(void)
+getDateTime(Args *args, int flag)
 {
-        char *dateTime = malloc(35);
+        char *dateTime = malloc(sizeof(char) * 72);
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-        sprintf(dateTime, " %s%02d:%02d %s%d-%d-%d",t->tm_hour >= 22 ? "🌙" : t->tm_hour < 12 ? "☕" :"🌞",  t->tm_hour, t->tm_min,(t->tm_mon + 1) == 12 ? "🎄" : "🗓️", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
 
+        sprintf(dateTime, " %s%02d:%02d %s%d-%d-%d",t->tm_hour >= 22 ? "🌙" : t->tm_hour < 12 ? "☕" :"🌞",  t->tm_hour, t->tm_min,(t->tm_mon + 1) == 12 ? "🎄" : "🗓️", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
         return dateTime;
 }
 
 char *
-getMem(void)
+getMem(Args *arg, int flag)
 {
         char buffer[1024] = "";
         char *memUsage = malloc(sizeof(char) * 12);
@@ -43,33 +48,19 @@ getMem(void)
                 }
         }
         fclose(file);
-        sprintf(memUsage, " 💾%.2fGb", (float)(memTotal - memAvailable) * 1e-6);
-
+        float usage = (float)(memTotal - memAvailable) * 1e-6;
+        
+        if (flag == 0)
+        {
+                sprintf(memUsage, " %s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
+                return memUsage;
+        }
+        sprintf(memUsage, " %s%.2fGb", arg->minArgs.icon, usage);
         return memUsage;
 }
 
 char *
-getLoadAvg(void)
-{
-        char result[10] = " 🖥️";
-        char *loadavg = malloc(sizeof(char) * 20);
-        int n = 5;
-        int i;
-
-        FILE *file = fopen("/proc/loadavg", "r");
-        if (file == NULL) return "";
-        
-        while ((i = fgetc(file)) != ' ')
-        {
-                result[n++] = (char) i;
-        }
-        fclose(file);
-        strcpy(loadavg, result);
-        return loadavg;
-}
-
-char *
-getCpuLoad(void)
+getCpuLoad(Args *arg, int flag)
 {
         long int cpuTotal = 0;
         long int cpuWork = 0;
@@ -102,25 +93,45 @@ getCpuLoad(void)
         }
         float cpuLoad = fabs((float)(cpuWork - cpuWorkCache) / (float)(cpuTotal - cpuTotalCache) * 100);
 
-        sprintf(result, " %s%.2f%%",  cpuLoad <= 30 ? "🧊": cpuLoad < 80 ? "🔥" : "🧯", cpuLoad );
+        
+        if (flag == 0)
+        {
+                sprintf(result, " %s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
+        }
+        else
+        {
+                sprintf(result, " %s%.2f%%", arg->minArgs.icon, cpuLoad);
+        
+        }
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
-
         return result;
 }
 
 char *
-getCpuTemp(void)
+getCpuTemp(Args *arg, int flag)
 {
-        int temperatue = 0;
+        int temperature = 0;
         char *cpuTemp = malloc(sizeof(char) * 20);
 
         FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
         if (file == NULL) return "";
 
-        fscanf(file, "%d", &temperatue);
-        sprintf(cpuTemp, " %s%d", temperatue / 1000 <= 30 ? "🧊": temperatue < 80 ? "🌡️" : "🔥", temperatue / 1000);
-
+        fscanf(file, "%d", &temperature);
         fclose(file);
+        int temp = temperature / 1000;
+
+        if (flag == 0)
+        {
+                sprintf(cpuTemp, " %s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
+                return cpuTemp;
+        }
+        sprintf(cpuTemp, " %s%d°C", arg->minArgs.icon, temp);
         return cpuTemp;
+}
+
+static char *
+moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, float formatVal)
+{
+        return formatVal < lowVal ? lowIcon : formatVal > lowVal && formatVal < highVal ? midIcon : lowIcon;
 }

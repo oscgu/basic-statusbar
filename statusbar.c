@@ -10,7 +10,9 @@
 
 /* structs */
 typedef struct {
-        char *(*func)(void);
+        char *(*func)(Args *, int);
+        Args args;
+        int flag;
 } Module;
 
 /* config file */
@@ -33,7 +35,7 @@ setroot()
 
         for (i=0; i<LENGTH(modules); i++)
         {
-                char *text = modules[i].func();
+                char *text = modules[i].func(&modules[i].args, modules[i].flag);
                 if (i==0) {
                         strcpy(status, text);
                         free(text);

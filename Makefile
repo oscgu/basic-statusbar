@@ -1,6 +1,6 @@
 OBJ = statusbar.c modules.c 
 CC = cc
-CFLAGS = -lX11 -std=c99 -pedantic -Wall
+CFLAGS = -lX11 -Os
 
-statusbar: ${OBJ}
+statusbar: ${OBJ} config.h
 	${CC} -o $@ ${OBJ} $(CFLAGS)
