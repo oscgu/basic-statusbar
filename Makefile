@@ -1,7 +1,19 @@
 .POSIX:
-OBJ = statusbar.c modules.c 
+OBJ = statusbar.c modules.c
 CC = cc
-CFLAGS = -lX11 -Os
+CFLAGS = -Os -pedantic
+LIBS = -lX11
 
-statusbar: ${OBJ} config.h
-	${CC} -o $@ ${OBJ} $(CFLAGS)
+all: statusbar
+
+statusbar: statusbar.o modules.o
+	${CC} ${CFLAGS} -o $@ ${OBJ} ${LIBS}
+
+statusbar.o: statusbar.c
+	${CC} -c ${CFLAGS} statusbar.c
+
+modules.o: modules.c modules.h
+	${CC} -c ${CFLAGS} modules.c
+
+clean:
+	rm -f statusbar statusbar.o modules.o

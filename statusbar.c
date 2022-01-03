@@ -45,7 +45,6 @@ setroot()
                 strcat(status, text);
                 free(text);
         }
-
         Display *d = XOpenDisplay(NULL);
         if (d) dpy = d;
 
