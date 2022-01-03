@@ -41,6 +41,7 @@ setroot()
                         free(text);
                         continue;
                 }
+                strcat(status, &delimitter);
                 strcat(status, text);
                 free(text);
         }

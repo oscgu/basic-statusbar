@@ -12,16 +12,17 @@
  * Mode: 1
  *
  */
-
 static Module modules[] = {
 
-        /* Modules        LowVal        HighVal        LowIcon          MidIcon        HighIcon        Mode*/
+        /* Modules        LowVal        HighVal        LowIcon          MidIcon        HighIcon        Mode */
         { getCpuTemp, {    33,           66,             "🧊",           "🌡️",           "🔥" },        0},
         { getCpuLoad, {    33,           66,             "🧊",           "🔥",           "🧯" },        0},
 
-        /* Modules      StaticIcon                 Mode */
-        { getMem, {     .minArgs.icon = "💾" },     1},
+        /* Modules      StaticIcon                                                                     Mode */
+        { getMem, {   .minArgs.icon = "💾" },                                                           1},
 
-        /* No custom formatting yet */
-        { getDateTime,  {   0,            0,               "",             "",             "" }, 0},
+        { getDateTime, {   10,            9,             "☕",           "⏳",           "🌙" },        0},
 };
+
+/* char between modules */
+static char delimitter = ' ';

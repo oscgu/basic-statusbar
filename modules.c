@@ -14,14 +14,20 @@ static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIc
 
 /* function implementations */
 char *
-getDateTime(Args *args, int flag)
+getDateTime(Args *arg, int flag)
 {
         char *dateTime = malloc(sizeof(char) * 72);
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
 
-        sprintf(dateTime, " %s%02d:%02d %s%d-%d-%d",t->tm_hour >= 22 ? "🌙" : t->tm_hour < 12 ? "☕" :"🌞",  t->tm_hour, t->tm_min,(t->tm_mon + 1) == 12 ? "🎄" : "🗓️", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+        if (flag == 0)
+        {
+                sprintf(dateTime, "%s%02d:%02d %02d.%02d.%02d",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_hour), t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+                return dateTime;
+        }
+        sprintf(dateTime, "%s%02d:%02d %02d.%02d.%02d", arg->minArgs.icon, t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
         return dateTime;
+        
 }
 
 char *
@@ -52,10 +58,10 @@ getMem(Args *arg, int flag)
         
         if (flag == 0)
         {
-                sprintf(memUsage, " %s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
+                sprintf(memUsage, "%s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
                 return memUsage;
         }
-        sprintf(memUsage, " %s%.2fGb", arg->minArgs.icon, usage);
+        sprintf(memUsage, "%s%.2fGb", arg->minArgs.icon, usage);
         return memUsage;
 }
 
@@ -96,11 +102,11 @@ getCpuLoad(Args *arg, int flag)
         
         if (flag == 0)
         {
-                sprintf(result, " %s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
+                sprintf(result, "%s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
         }
         else
         {
-                sprintf(result, " %s%.2f%%", arg->minArgs.icon, cpuLoad);
+                sprintf(result, "%s%.2f%%", arg->minArgs.icon, cpuLoad);
         
         }
         cpuWorkCache = cpuWork;
@@ -123,10 +129,10 @@ getCpuTemp(Args *arg, int flag)
 
         if (flag == 0)
         {
-                sprintf(cpuTemp, " %s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
+                sprintf(cpuTemp, "%s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
                 return cpuTemp;
         }
-        sprintf(cpuTemp, " %s%d°C", arg->minArgs.icon, temp);
+        sprintf(cpuTemp, "%s%d°C", arg->minArgs.icon, temp);
         return cpuTemp;
 }
 

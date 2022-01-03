@@ -1,3 +1,4 @@
+.POSIX:
 OBJ = statusbar.c modules.c 
 CC = cc
 CFLAGS = -lX11 -Os

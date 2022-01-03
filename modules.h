@@ -16,6 +16,7 @@ typedef struct {
                 MaxArgs maxArgs;
                 MinimalArgs minArgs;
         };
+        int flag;
 } Args;
 
 /* function declarations */
