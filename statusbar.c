@@ -52,7 +52,6 @@ setroot()
         root = RootWindow(dpy, screen);
         XStoreName(dpy, root, status);
         XCloseDisplay(dpy);
-
         free(status);
 }
 

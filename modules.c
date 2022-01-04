@@ -5,9 +5,12 @@
 #include <time.h>
 #include "modules.h"
 
+/* Macros */
+#define BUFFER 128
+
 /* variables */
-long int cpuWorkCache = 0;
-long int cpuTotalCache = 0;
+static long int cpuWorkCache = 0;
+static long int cpuTotalCache = 0;
 
 /* function declarations */
 static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, float formatVal);
@@ -16,25 +19,25 @@ static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIc
 char *
 getDateTime(Args *arg, int flag)
 {
-        char *dateTime = malloc(sizeof(char) * 72);
+        char *dateTime = malloc(sizeof(char) * BUFFER);
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-
         if (flag == 0)
         {
-                sprintf(dateTime, "%s%02d:%02d %02d.%02d.%02d",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_hour), t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+                snprintf(dateTime, BUFFER, "%s%02d:%02d %02d.%02d.%02d", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_hour), t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
                 return dateTime;
         }
-        sprintf(dateTime, "%s%02d:%02d %02d.%02d.%02d", arg->minArgs.icon, t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+        snprintf(dateTime, BUFFER, "%s%02d:%02d %02d.%02d.%02d", arg->minArgs.icon, t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+
         return dateTime;
-        
 }
 
 char *
 getMem(Args *arg, int flag)
 {
         char buffer[1024] = "";
-        char *memUsage = malloc(sizeof(char) * 12);
+        char *memUsage = malloc(sizeof(char) * BUFFER);
+
         int memTotal = 0;
         int memAvailable = 0;
 
@@ -55,13 +58,13 @@ getMem(Args *arg, int flag)
         }
         fclose(file);
         float usage = (float)(memTotal - memAvailable) * 1e-6;
-        
         if (flag == 0)
         {
-                sprintf(memUsage, "%s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
+                snprintf(memUsage, BUFFER, "%s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
                 return memUsage;
         }
-        sprintf(memUsage, "%s%.2fGb", arg->minArgs.icon, usage);
+        snprintf(memUsage, BUFFER, "%s%.2fGb", arg->minArgs.icon, usage);
+
         return memUsage;
 }
 
@@ -72,7 +75,7 @@ getCpuLoad(Args *arg, int flag)
         long int cpuWork = 0;
         int i=0;
 
-        char *result = malloc(sizeof(char) * 25);
+        char *result = malloc(sizeof(char) * BUFFER);
         char line[1][128];
 
         FILE *file = fopen("/proc/stat", "r");
@@ -99,18 +102,18 @@ getCpuLoad(Args *arg, int flag)
         }
         float cpuLoad = fabs((float)(cpuWork - cpuWorkCache) / (float)(cpuTotal - cpuTotalCache) * 100);
 
-        
         if (flag == 0)
         {
-                sprintf(result, "%s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
+                snprintf(result, BUFFER, "%s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
         }
         else
         {
-                sprintf(result, "%s%.2f%%", arg->minArgs.icon, cpuLoad);
+                snprintf(result, BUFFER, "%s%.2f%%", arg->minArgs.icon, cpuLoad);
         
         }
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
+
         return result;
 }
 
@@ -118,7 +121,7 @@ char *
 getCpuTemp(Args *arg, int flag)
 {
         int temperature = 0;
-        char *cpuTemp = malloc(sizeof(char) * 20);
+        char *cpuTemp = malloc(sizeof(char) * BUFFER);
 
         FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
         if (file == NULL) return "";
@@ -129,10 +132,10 @@ getCpuTemp(Args *arg, int flag)
 
         if (flag == 0)
         {
-                sprintf(cpuTemp, "%s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
+                snprintf(cpuTemp, BUFFER, "%s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
                 return cpuTemp;
         }
-        sprintf(cpuTemp, "%s%d°C", arg->minArgs.icon, temp);
+        snprintf(cpuTemp, BUFFER, "%s%d°C", arg->minArgs.icon, temp);
         return cpuTemp;
 }
 
