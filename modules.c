@@ -7,6 +7,7 @@
 
 /* Macros */
 #define BUFFER 128
+#define LENGTH(X)       (sizeof X / sizeof X[0])
 
 /* variables */
 static long int cpuWorkCache = 0;
@@ -17,26 +18,57 @@ static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIc
 
 /* function implementations */
 char *
-getDateTime(Args *arg, int flag)
+tm(Args *arg, int flag)
 {
-        char *dateTime = malloc(sizeof(char) * BUFFER);
+        char *format = "%s%02d:%02d";
+        char *timeBuff = malloc(sizeof(char) * BUFFER);
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
         if (flag == 0)
         {
-                snprintf(dateTime, BUFFER, "%s%02d:%02d %02d.%02d.%02d", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_hour), t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
-                return dateTime;
+                snprintf(timeBuff, BUFFER, format, moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_hour), t->tm_hour, t->tm_min);
+                return timeBuff;
         }
-        snprintf(dateTime, BUFFER, "%s%02d:%02d %02d.%02d.%02d", arg->minArgs.icon, t->tm_hour, t->tm_min, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+        snprintf(timeBuff, BUFFER, format, arg->minArgs.icon, t->tm_hour, t->tm_min);
 
-        return dateTime;
+        return timeBuff;
 }
 
 char *
-getMem(Args *arg, int flag)
+dm(Args *arg, int flag)
+{
+        char *format = "%s%02d.%02d.%d";
+        char *dateBuff = malloc(sizeof(char) * BUFFER);
+        time_t now = time(NULL);
+        struct tm *t = localtime(&now);
+        snprintf(dateBuff, BUFFER, format, "", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+
+        if (flag == 0)
+        {
+                snprintf(dateBuff, BUFFER, format, moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_mon + 1), t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);  
+                return dateBuff;
+        }
+        else if (flag == 1) {
+                snprintf(dateBuff, BUFFER, format, arg->minArgs.icon, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900); 
+                return dateBuff;
+        }
+        else if (flag == 2) {
+                for (int i=0; i<LENGTH(arg->dates); i++) {
+                        if (strcmp(dateBuff, arg->dates[i]->datearr) == 0) {
+                                snprintf(dateBuff, BUFFER, format, arg->dates[i]->icon, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900); 
+                                return dateBuff;
+                        }
+                }
+        }
+
+        return dateBuff;
+}
+
+char *
+mm(Args *arg, int flag)
 {
         char buffer[1024] = "";
-        char *memUsage = malloc(sizeof(char) * BUFFER);
+        char *memBuff = malloc(sizeof(char) * BUFFER);
 
         int memTotal = 0;
         int memAvailable = 0;
@@ -60,22 +92,22 @@ getMem(Args *arg, int flag)
         float usage = (float)(memTotal - memAvailable) * 1e-6;
         if (flag == 0)
         {
-                snprintf(memUsage, BUFFER, "%s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
-                return memUsage;
+                snprintf(memBuff, BUFFER, "%s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
+                return memBuff;
         }
-        snprintf(memUsage, BUFFER, "%s%.2fGb", arg->minArgs.icon, usage);
+        snprintf(memBuff, BUFFER, "%s%.2fGb", arg->minArgs.icon, usage);
 
-        return memUsage;
+        return memBuff;
 }
 
 char *
-getCpuLoad(Args *arg, int flag)
+plm(Args *arg, int flag)
 {
         long int cpuTotal = 0;
         long int cpuWork = 0;
         int i=0;
 
-        char *result = malloc(sizeof(char) * BUFFER);
+        char *loadBuff = malloc(sizeof(char) * BUFFER);
         char line[1][128];
 
         FILE *file = fopen("/proc/stat", "r");
@@ -104,24 +136,24 @@ getCpuLoad(Args *arg, int flag)
 
         if (flag == 0)
         {
-                snprintf(result, BUFFER, "%s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
+                snprintf(loadBuff, BUFFER, "%s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
         }
         else
         {
-                snprintf(result, BUFFER, "%s%.2f%%", arg->minArgs.icon, cpuLoad);
+                snprintf(loadBuff, BUFFER, "%s%.2f%%", arg->minArgs.icon, cpuLoad);
         
         }
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
 
-        return result;
+        return loadBuff;
 }
 
 char *
-getCpuTemp(Args *arg, int flag)
+ptm(Args *arg, int flag)
 {
         int temperature = 0;
-        char *cpuTemp = malloc(sizeof(char) * BUFFER);
+        char *tempBuff = malloc(sizeof(char) * BUFFER);
 
         FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
         if (file == NULL) return "";
@@ -132,11 +164,11 @@ getCpuTemp(Args *arg, int flag)
 
         if (flag == 0)
         {
-                snprintf(cpuTemp, BUFFER, "%s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
-                return cpuTemp;
+                snprintf(tempBuff, BUFFER, "%s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
+                return tempBuff;
         }
-        snprintf(cpuTemp, BUFFER, "%s%d°C", arg->minArgs.icon, temp);
-        return cpuTemp;
+        snprintf(tempBuff, BUFFER, "%s%d°C", arg->minArgs.icon, temp);
+        return tempBuff;
 }
 
 static char *

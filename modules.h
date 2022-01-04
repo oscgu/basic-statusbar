@@ -1,5 +1,10 @@
 /* structs */
 typedef struct {
+        char *datearr;
+        char *icon;
+} Date;
+
+typedef struct {
         char *icon;
 } MinimalArgs;
 
@@ -15,12 +20,14 @@ typedef struct {
         union {
                 MaxArgs maxArgs;
                 MinimalArgs minArgs;
+                Date *dates[10];
         };
         int flag;
 } Args;
 
 /* function declarations */
-char *getDateTime(Args *, int);
-char *getMem(Args *, int);
-char *getCpuLoad(Args *, int);
-char *getCpuTemp(Args *, int);
+char *dm(Args *, int);
+char *tm(Args *, int);
+char *mm(Args *, int);
+char *plm(Args *, int);
+char *ptm(Args *, int);

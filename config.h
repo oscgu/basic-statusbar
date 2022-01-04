@@ -12,17 +12,25 @@
  * Mode: 1
  *
  */
+static Date datearr[10] = {
+        /*      Date    Icon */
+        { "24.12.2022", "🎅" }
+};
+
 static Module modules[] = {
 
         /* Modules        LowVal        HighVal        LowIcon          MidIcon        HighIcon        Mode */
-        { getCpuTemp, {    33,           66,             "🧊",           "🌡️",           "🔥" },        0},
-        { getCpuLoad, {    33,           66,             "🧊",           "🔥",           "🧯" },        0},
+        { ptm, {            33,           66,             "🧊",           "🌡️",           "🔥" },        0},
+        { plm, {            33,           66,             "🧊",           "🔥",           "🧯" },        0},
 
         /* Modules      StaticIcon                                                                     Mode */
-        { getMem, {   .minArgs.icon = "💾" },                                                           1},
-
-        { getDateTime, {   10,            9,             "☕",           "⏳",           "🌙" },        0},
+        { mm, {   .minArgs.icon = "💾" },                                                                1},
+        { tm, {             10,            19,             "☕",           "⏳",           "🌙" },       0},
+        /* Modules      Dates */
+        { dm, {   .minArgs.icon = "🗓️" },                                                                1},
 };
+
+/* .dates = datearr */
 
 /* char between modules */
 static char delimitter = ' ';

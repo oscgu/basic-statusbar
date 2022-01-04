@@ -4,9 +4,9 @@ CC = cc
 CFLAGS = -Os -pedantic
 LIBS = -lX11
 
-all: statusbar
+all: statusbar config.h
 
-statusbar: statusbar.o modules.o
+statusbar: statusbar.o modules.o config.h
 	${CC} ${CFLAGS} -o $@ ${OBJ} ${LIBS}
 
 statusbar.o: statusbar.c
