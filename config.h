@@ -25,8 +25,8 @@ static Module modules[] = {
 
         /* Modules      StaticIcon                                                                     Mode */
         { mm, {   .minArgs.icon = "💾" },                                                                1},
+
         { tm, {             10,            19,             "☕",           "⏳",           "🌙" },       0},
-        /* Modules      Dates */
         { dm, {   .minArgs.icon = "🗓️" },                                                                1},
 };
 

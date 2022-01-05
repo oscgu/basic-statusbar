@@ -14,7 +14,7 @@ static long int cpuWorkCache = 0;
 static long int cpuTotalCache = 0;
 
 /* function declarations */
-static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, float formatVal);
+static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, int formatVal);
 
 /* function implementations */
 char *
@@ -30,7 +30,6 @@ tm(Args *arg, int flag)
                 return timeBuff;
         }
         snprintf(timeBuff, BUFFER, format, arg->minArgs.icon, t->tm_hour, t->tm_min);
-
         return timeBuff;
 }
 
@@ -172,7 +171,7 @@ ptm(Args *arg, int flag)
 }
 
 static char *
-moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, float formatVal)
+moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, int formatVal)
 {
-        return formatVal < lowVal ? lowIcon : formatVal > lowVal && formatVal < highVal ? midIcon : lowIcon;
+        return formatVal < lowVal ? lowIcon : formatVal > lowVal && formatVal < highVal ? midIcon : highIcon;
 }
