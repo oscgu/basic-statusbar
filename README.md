@@ -28,3 +28,12 @@ Add this to your .xinitrc
 ```
 exec /basic-statusbar/statusbar
 ```
+
+# Where are the values from
+
+| Module                      | Source                              |
+| --------------------------- | ----------------------------------- |
+| MemoryModule        (mm)    | /proc/mem                           |
+| ProcessorLoadModule (plm)   | /proc/stats                         |
+| ProcessorTempModule (ptm)   | /sys/class/hwmon/hwmon2/temp1_input |
+| Date/TimeModule     (dm/tm) | time.h                              |
