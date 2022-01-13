@@ -1,6 +1,6 @@
 # basic-statusbar
 
-A very basic statusbar for dwm I quickly threw together for my fresh install :)
+A very basic statusbar for **[dwm](https://dwm.suckless.org)** I quickly threw together for my fresh install :)
 
 # Prerequisites
 
