@@ -24,6 +24,7 @@ tm(Args *arg, int flag)
         char *timeBuff = malloc(sizeof(char) * BUFFER);
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
+
         if (flag == 0)
         {
                 snprintf(timeBuff, BUFFER, format, moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_hour), t->tm_hour, t->tm_min);
@@ -73,7 +74,7 @@ mm(Args *arg, int flag)
         int memAvailable = 0;
 
         FILE *file = fopen("/proc/meminfo", "r");
-        if (file == NULL) return "";
+        if (file == NULL) return memBuff;
 
         while (fscanf(file, " %1023s", buffer) == 1)
         {
@@ -155,7 +156,7 @@ ptm(Args *arg, int flag)
         char *tempBuff = malloc(sizeof(char) * BUFFER);
 
         FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
-        if (file == NULL) return "";
+        if (file == NULL) return tempBuff;
 
         fscanf(file, "%d", &temperature);
         fclose(file);
