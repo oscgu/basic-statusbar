@@ -23,6 +23,7 @@ nvpn(Args *arg, int flag)
         char *status = malloc(sizeof(char) * 30);
         char buff[1035];
         char vpnstatus[20];
+        int state;
 
         FILE *fp;
         fp = popen("/bin/nordvpn status", "r");
@@ -33,12 +34,21 @@ nvpn(Args *arg, int flag)
                 }
         }
         pclose(fp);
-
         if (strcmp(vpnstatus, "Connected") == 0) {
-                snprintf(status, 50, "%s%s", arg->minArgs.icon, "ON");
+                state = 0;
+        } else {
+                state = 1;
+        }
+
+        if (flag == 1) {
+                if (!state) {
+                        snprintf(status, 50, "%s%s", arg->minArgs.icon, "ON");
+                        return status;
+                }
+                snprintf(status, 50, "%s%s", arg->minArgs.icon, "OFF");
                 return status;
         }
-        snprintf(status, 50, "%s%s", arg->minArgs.icon, "OFF");
+        snprintf(status, 50, "vpn %s", moduleFormatter(arg, state));
         return status;
 }
 
@@ -177,5 +187,5 @@ ptm(Args *arg, int flag)
 static char *
 moduleFormatter(Args *arg, int formatVal)
 {
-        return formatVal < arg->maxArgs.lowVal ? arg->maxArgs.lowIcon : formatVal > arg->maxArgs.lowVal && formatVal < arg->maxArgs.highVal ? arg->maxArgs.midIcon : arg->maxArgs.highIcon;
+        return formatVal <= arg->maxArgs.lowVal ? arg->maxArgs.lowIcon : formatVal >= arg->maxArgs.lowVal && formatVal <= arg->maxArgs.highVal ? arg->maxArgs.midIcon : arg->maxArgs.highIcon;
 }
