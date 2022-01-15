@@ -6,7 +6,7 @@
 #include "modules.h"
 
 /* Macros */
-#define BUFFER 128
+#define BUFFER          128
 #define LENGTH(X)       (sizeof X / sizeof X[0])
 
 /* variables */
@@ -14,7 +14,7 @@ static long int cpuWorkCache = 0;
 static long int cpuTotalCache = 0;
 
 /* function declarations */
-static char *moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, int formatVal);
+static char *moduleFormatter(Args *arg, int formatVal);
 
 /* function implementations */
 char *
@@ -27,7 +27,7 @@ tm(Args *arg, int flag)
 
         if (flag == 0)
         {
-                snprintf(timeBuff, BUFFER, format, moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_hour), t->tm_hour, t->tm_min);
+                snprintf(timeBuff, BUFFER, format, moduleFormatter(arg, t->tm_hour), t->tm_hour, t->tm_min);
                 return timeBuff;
         }
         snprintf(timeBuff, BUFFER, format, arg->minArgs.icon, t->tm_hour, t->tm_min);
@@ -45,7 +45,7 @@ dm(Args *arg, int flag)
 
         if (flag == 0)
         {
-                snprintf(dateBuff, BUFFER, format, moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, t->tm_mon + 1), t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);  
+                snprintf(dateBuff, BUFFER, format, moduleFormatter(arg, t->tm_mon + 1), t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
                 return dateBuff;
         }
         else if (flag == 1) {
@@ -64,8 +64,7 @@ dm(Args *arg, int flag)
         return dateBuff;
 }
 
-char *
-mm(Args *arg, int flag)
+char * mm(Args *arg, int flag)
 {
         char buffer[1024] = "";
         char *memBuff = malloc(sizeof(char) * BUFFER);
@@ -92,7 +91,7 @@ mm(Args *arg, int flag)
         float usage = (float)(memTotal - memAvailable) * 1e-6;
         if (flag == 0)
         {
-                snprintf(memBuff, BUFFER, "%s%.2fGb",moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, usage), usage);
+                snprintf(memBuff, BUFFER, "%s%.2fGb",moduleFormatter(arg, usage), usage);
                 return memBuff;
         }
         snprintf(memBuff, BUFFER, "%s%.2fGb", arg->minArgs.icon, usage);
@@ -136,7 +135,7 @@ plm(Args *arg, int flag)
 
         if (flag == 0)
         {
-                snprintf(loadBuff, BUFFER, "%s%.2f%%", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, cpuLoad), cpuLoad );
+                snprintf(loadBuff, BUFFER, "%s%.2f%%", moduleFormatter(arg, cpuLoad), cpuLoad );
         }
         else
         {
@@ -164,7 +163,7 @@ ptm(Args *arg, int flag)
 
         if (flag == 0)
         {
-                snprintf(tempBuff, BUFFER, "%s%d°C", moduleFormatter(arg->maxArgs.lowVal, arg->maxArgs.highVal, arg->maxArgs.lowIcon, arg->maxArgs.midIcon, arg->maxArgs.highIcon, (float)temp), temp);
+                snprintf(tempBuff, BUFFER, "%s%d°C", moduleFormatter(arg, temp), temp);
                 return tempBuff;
         }
         snprintf(tempBuff, BUFFER, "%s%d°C", arg->minArgs.icon, temp);
@@ -172,7 +171,7 @@ ptm(Args *arg, int flag)
 }
 
 static char *
-moduleFormatter(int lowVal, int highVal, char *lowIcon, char *midIcon, char *highIcon, int formatVal)
+moduleFormatter(Args *arg, int formatVal)
 {
-        return formatVal < lowVal ? lowIcon : formatVal > lowVal && formatVal < highVal ? midIcon : highIcon;
+        return formatVal < arg->maxArgs.lowVal ? arg->maxArgs.lowIcon : formatVal > arg->maxArgs.lowVal && formatVal < arg->maxArgs.highVal ? arg->maxArgs.midIcon : arg->maxArgs.highIcon;
 }

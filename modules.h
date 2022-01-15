@@ -1,10 +1,5 @@
 /* structs */
 typedef struct {
-        char *datearr;
-        char *icon;
-} Date;
-
-typedef struct {
         char *icon;
 } MinimalArgs;
 
@@ -20,7 +15,6 @@ typedef struct {
         union {
                 MaxArgs maxArgs;
                 MinimalArgs minArgs;
-                Date *dates[10];
         };
         int flag;
 } Args;

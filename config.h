@@ -15,7 +15,7 @@
  * Mode: 1
  *
  * Example:
-  { mm, {   .minArgs.icon = "" },                                                                  1},
+  { mm, {   .minArgs.icon = "Memory: " },       1},
  */
 
 static Module modules[] = {
@@ -30,4 +30,3 @@ static Module modules[] = {
 
 /* char between modules */
 static char delimitter = ' ';
-
