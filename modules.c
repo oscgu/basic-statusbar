@@ -52,14 +52,6 @@ dm(Args *arg, int flag)
                 snprintf(dateBuff, BUFFER, format, arg->minArgs.icon, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900); 
                 return dateBuff;
         }
-        else if (flag == 2) {
-                for (int i=0; i<LENGTH(arg->dates); i++) {
-                        if (strcmp(dateBuff, arg->dates[i]->datearr) == 0) {
-                                snprintf(dateBuff, BUFFER, format, arg->dates[i]->icon, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900); 
-                                return dateBuff;
-                        }
-                }
-        }
 
         return dateBuff;
 }
