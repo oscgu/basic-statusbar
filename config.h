@@ -21,11 +21,12 @@
 static Module modules[] = {
 
         /* Modules      StaticIcon     Mode */
-        { ptm, {  .minArgs.icon = "" }, 1},
-        { plm, {  .minArgs.icon = "" }, 1},
-        { mm, {   .minArgs.icon = "" }, 1},
-        { tm, {   .minArgs.icon = "" }, 1},
-        { dm, {   .minArgs.icon = "" }, 1},
+        { nvpn, { .minArgs.icon = "" }, 1},
+        { ptm,  { .minArgs.icon = "" }, 1},
+        { plm,  { .minArgs.icon = "" }, 1},
+        { mm,   { .minArgs.icon = "" }, 1},
+        { tm,   { .minArgs.icon = "" }, 1},
+        { dm,   { .minArgs.icon = "" }, 1},
 };
 
 /* char between modules */

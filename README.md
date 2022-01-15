@@ -37,3 +37,4 @@ exec /basic-statusbar/statusbar
 | ProcessorLoadModule (plm)   | /proc/stats                         |
 | ProcessorTempModule (ptm)   | /sys/class/hwmon/hwmon1/temp1_input |
 | Date/TimeModule     (dm/tm) | time.h                              |
+| NordVPN             (nvpn)  | /bin/nordvpn status                 |

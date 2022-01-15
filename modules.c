@@ -18,6 +18,32 @@ static char *moduleFormatter(Args *arg, int formatVal);
 
 /* function implementations */
 char *
+nvpn(Args *arg, int flag)
+{
+        char *status = malloc(sizeof(char) * 30);
+        char buff[1035];
+        char vpnstatus[20];
+
+        FILE *fp;
+        fp = popen("/bin/nordvpn status", "r");
+
+        while (fscanf(fp, " %1023s", buff) == 1) {
+                if (strcmp(buff, "Status:") == 0) {
+                        fscanf(fp, " %s", vpnstatus);
+                }
+        }
+        pclose(fp);
+
+        if (strcmp(vpnstatus, "Connected") == 0) {
+                snprintf(status, 50, "%s%s", arg->minArgs.icon, "ON");
+                return status;
+        }
+        snprintf(status, 50, "%s%s", arg->minArgs.icon, "OFF");
+        return status;
+}
+
+
+char *
 tm(Args *arg, int flag)
 {
         char *format = "%s%02d:%02d";

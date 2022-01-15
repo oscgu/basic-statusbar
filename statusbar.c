@@ -59,6 +59,6 @@ main()
 {
         for (;;) {
                 setroot();
-                sleep(10);
+                sleep(1);
         }
 }

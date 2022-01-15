@@ -25,3 +25,4 @@ char *tm(Args *, int);
 char *mm(Args *, int);
 char *plm(Args *, int);
 char *ptm(Args *, int);
+char *nvpn(Args *, int);
