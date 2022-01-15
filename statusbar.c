@@ -1,9 +1,9 @@
+#include "modules.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <X11/Xlib.h>
 #include <unistd.h>
-#include "modules.h"
+#include <X11/Xlib.h>
 
 /* macros */
 #define LENGTH(X)       (sizeof X / sizeof X[0])

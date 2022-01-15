@@ -1,9 +1,9 @@
 #include <math.h>
+#include "modules.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "modules.h"
 
 /* Macros */
 #define BUFFER          128
