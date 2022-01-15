@@ -35,5 +35,5 @@ exec /basic-statusbar/statusbar
 | --------------------------- | ----------------------------------- |
 | MemoryModule        (mm)    | /proc/mem                           |
 | ProcessorLoadModule (plm)   | /proc/stats                         |
-| ProcessorTempModule (ptm)   | /sys/class/hwmon/hwmon2/temp1_input |
+| ProcessorTempModule (ptm)   | /sys/class/hwmon/hwmon1/temp1_input |
 | Date/TimeModule     (dm/tm) | time.h                              |

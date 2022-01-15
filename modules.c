@@ -155,7 +155,7 @@ ptm(Args *arg, int flag)
         int temperature = 0;
         char *tempBuff = malloc(sizeof(char) * BUFFER);
 
-        FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
+        FILE *file = fopen("/sys/class/hwmon/hwmon1/temp1_input", "r");
         if (file == NULL) return tempBuff;
 
         fscanf(file, "%d", &temperature);
