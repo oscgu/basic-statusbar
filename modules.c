@@ -25,8 +25,7 @@ tm(Args *arg, int flag)
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
 
-        if (flag == 0)
-        {
+        if (flag == 0) {
                 snprintf(timeBuff, BUFFER, format, moduleFormatter(arg, t->tm_hour), t->tm_hour, t->tm_min);
                 return timeBuff;
         }
@@ -43,12 +42,10 @@ dm(Args *arg, int flag)
         struct tm *t = localtime(&now);
         snprintf(dateBuff, BUFFER, format, "", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
 
-        if (flag == 0)
-        {
+        if (flag == 0) {
                 snprintf(dateBuff, BUFFER, format, moduleFormatter(arg, t->tm_mon + 1), t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
                 return dateBuff;
-        }
-        else if (flag == 1) {
+        } else if (flag == 1) {
                 snprintf(dateBuff, BUFFER, format, arg->minArgs.icon, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900); 
                 return dateBuff;
         }
@@ -67,22 +64,18 @@ char * mm(Args *arg, int flag)
         FILE *file = fopen("/proc/meminfo", "r");
         if (file == NULL) return memBuff;
 
-        while (fscanf(file, " %1023s", buffer) == 1)
-        {
-                if (strcmp(buffer, "MemTotal:") == 0)
-                {
+        while (fscanf(file, " %1023s", buffer) == 1) {
+                if (strcmp(buffer, "MemTotal:") == 0) {
                         fscanf(file, " %d", &memTotal);
                 }
-
-                if (strcmp(buffer, "MemAvailable:") == 0)
-                {
+                if (strcmp(buffer, "MemAvailable:") == 0) {
                         fscanf(file, " %d", &memAvailable);
                 }
         }
         fclose(file);
         float usage = (float)(memTotal - memAvailable) * 1e-6;
-        if (flag == 0)
-        {
+
+        if (flag == 0) {
                 snprintf(memBuff, BUFFER, "%s%.2fGb",moduleFormatter(arg, usage), usage);
                 return memBuff;
         }
@@ -110,27 +103,21 @@ plm(Args *arg, int flag)
 
         char *token = strtok(line[0], " ");
 
-        while (token != NULL)
-        {
+        while (token != NULL) {
                 i++;
                 token = strtok(NULL, " ");
-                if (i>0 && i<7)
-                {
+                if (i>0 && i<7) {
                         cpuTotal += atoi(token);
                 }
-                if (i>0 && i<4)
-                {
+                if (i>0 && i<4) {
                         cpuWork += atoi(token);
                 }
         }
         float cpuLoad = fabs((float)(cpuWork - cpuWorkCache) / (float)(cpuTotal - cpuTotalCache) * 100);
 
-        if (flag == 0)
-        {
+        if (flag == 0) {
                 snprintf(loadBuff, BUFFER, "%s%.2f%%", moduleFormatter(arg, cpuLoad), cpuLoad );
-        }
-        else
-        {
+        } else {
                 snprintf(loadBuff, BUFFER, "%s%.2f%%", arg->minArgs.icon, cpuLoad);
         
         }
@@ -153,8 +140,7 @@ ptm(Args *arg, int flag)
         fclose(file);
         int temp = temperature / 1000;
 
-        if (flag == 0)
-        {
+        if (flag == 0) {
                 snprintf(tempBuff, BUFFER, "%s%d°C", moduleFormatter(arg, temp), temp);
                 return tempBuff;
         }

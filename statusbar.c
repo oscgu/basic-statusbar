@@ -33,8 +33,7 @@ setroot()
         unsigned int i;
         char *status = malloc(sizeof(char) * 256);
 
-        for (i=0; i<LENGTH(modules); i++)
-        {
+        for (i=0; i<LENGTH(modules); i++) {
                 char *text = modules[i].func(&modules[i].args, modules[i].flag);
                 if (i==0) {
                         strcpy(status, text);
