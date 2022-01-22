@@ -34,6 +34,7 @@ nvpn(Args *arg, int flag)
                 }
         }
         pclose(fp);
+
         if (strcmp(vpnstatus, "Connected") == 0) {
                 state = 0;
         } else {
@@ -89,7 +90,8 @@ dm(Args *arg, int flag)
         return dateBuff;
 }
 
-char * mm(Args *arg, int flag)
+char *
+mm(Args *arg, int flag)
 {
         char buffer[1024] = "";
         char *memBuff = malloc(sizeof(char) * BUFFER);
@@ -168,9 +170,15 @@ ptm(Args *arg, int flag)
 {
         int temperature = 0;
         char *tempBuff = malloc(sizeof(char) * BUFFER);
+        char *fallback = "";
 
-        FILE *file = fopen("/sys/class/hwmon/hwmon1/temp1_input", "r");
-        if (file == NULL) return tempBuff;
+        FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
+        if (file == NULL) {
+                file = fopen("/sys/class/hwmon/hwmon1/temp1_input", "r");
+                if (file == NULL) {
+                        return fallback;
+                }
+        }
 
         fscanf(file, "%d", &temperature);
         fclose(file);
