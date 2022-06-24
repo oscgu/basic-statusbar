@@ -18,6 +18,27 @@ static char *moduleFormatter(Args *arg, int formatVal);
 
 /* function implementations */
 char *
+bm(Args *arg, int flag)
+{
+    char *status = malloc(sizeof(char) * 30);
+    int bat0p;
+    int bat1p;
+
+    FILE *bat0 = fopen("/sys/class/power_supply/BAT0/capacity", "r");
+    FILE *bat1 = fopen("/sys/class/power_supply/BAT1/capacity", "r");
+    
+    fscanf(bat0, "%d", &bat0p);
+    fscanf(bat1, "%d", &bat1p);
+
+    fclose(bat0);
+    fclose(bat1);
+
+    snprintf(status,30, "Bat: %d%% | %d%%", bat0p, bat1p);
+
+    return status;
+}
+
+char *
 nvpn(Args *arg, int flag)
 {
         char *status = malloc(sizeof(char) * 30);

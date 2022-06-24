@@ -21,9 +21,10 @@
 static Module modules[] = {
 
         /* Modules         LowVal       HighVal       LowIcon         MidIcon         HighIcon        Mode */
-        { nvpn, {            0,           2,             "✅",           "❌",           "" },        0},
+        //{ nvpn, {            0,           2,             "✅",           "❌",           "" },        0},
 
         /* Modules      StaticIcon     Mode */
+        { bm,   { .minArgs.icon = "" }, 1},
         { ptm,  { .minArgs.icon = "" }, 1},
         { plm,  { .minArgs.icon = "" }, 1},
         { mm,   { .minArgs.icon = "" }, 1},
