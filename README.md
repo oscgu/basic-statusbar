@@ -5,7 +5,7 @@ A very basic statusbar for **[dwm](https://dwm.suckless.org)** I quickly threw t
 # Prerequisites
 
 Make sure you have applied the libxft-bgra patch and this removed
-from ```dwm.c``` for emojis to render
+from ```drw.c``` for emojis to render
 
 ```
 FcBool iscol;
