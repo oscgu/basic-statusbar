@@ -1,13 +1,13 @@
-#include <math.h>
 #include "modules.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 /* Macros */
-#define BUFFER          128
-#define LENGTH(X)       (sizeof X / sizeof X[0])
+#define BUFFER    128
+#define LENGTH(X) (sizeof X / sizeof X[0])
 
 /* variables */
 static long int cpuWorkCache = 0;
@@ -20,22 +20,22 @@ static char *moduleFormatter(Args *arg, int formatVal);
 char *
 bm(Args *arg, int flag)
 {
-    char *status = malloc(sizeof(char) * 30);
-    int bat0p;
-    int bat1p;
+        char *status = malloc(sizeof(char) * 30);
+        int bat0p;
+        int bat1p;
 
-    FILE *bat0 = fopen("/sys/class/power_supply/BAT0/capacity", "r");
-    FILE *bat1 = fopen("/sys/class/power_supply/BAT1/capacity", "r");
-    
-    fscanf(bat0, "%d", &bat0p);
-    fscanf(bat1, "%d", &bat1p);
+        FILE *bat0 = fopen("/sys/class/power_supply/BAT0/capacity", "r");
+        FILE *bat1 = fopen("/sys/class/power_supply/BAT1/capacity", "r");
 
-    fclose(bat0);
-    fclose(bat1);
+        fscanf(bat0, "%d", &bat0p);
+        fscanf(bat1, "%d", &bat1p);
 
-    snprintf(status,30, "Bat: %d%% | %d%%", bat0p, bat1p);
+        fclose(bat0);
+        fclose(bat1);
 
-    return status;
+        snprintf(status, 30, "Bat: %d%% | %d%%", bat0p, bat1p);
+
+        return status;
 }
 
 char *
@@ -74,7 +74,6 @@ nvpn(Args *arg, int flag)
         return status;
 }
 
-
 char *
 tm(Args *arg, int flag)
 {
@@ -84,10 +83,13 @@ tm(Args *arg, int flag)
         struct tm *t = localtime(&now);
 
         if (flag == 0) {
-                snprintf(timeBuff, BUFFER, format, moduleFormatter(arg, t->tm_hour), t->tm_hour, t->tm_min);
+                snprintf(timeBuff, BUFFER, format,
+                         moduleFormatter(arg, t->tm_hour), t->tm_hour,
+                         t->tm_min);
                 return timeBuff;
         }
-        snprintf(timeBuff, BUFFER, format, arg->minArgs.icon, t->tm_hour, t->tm_min);
+        snprintf(timeBuff, BUFFER, format, arg->minArgs.icon, t->tm_hour,
+                 t->tm_min);
         return timeBuff;
 }
 
@@ -98,13 +100,17 @@ dm(Args *arg, int flag)
         char *dateBuff = malloc(sizeof(char) * BUFFER);
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-        snprintf(dateBuff, BUFFER, format, "", t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+        snprintf(dateBuff, BUFFER, format, "", t->tm_mday, t->tm_mon + 1,
+                 t->tm_year + 1900);
 
         if (flag == 0) {
-                snprintf(dateBuff, BUFFER, format, moduleFormatter(arg, t->tm_mon + 1), t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
+                snprintf(dateBuff, BUFFER, format,
+                         moduleFormatter(arg, t->tm_mon + 1), t->tm_mday,
+                         t->tm_mon + 1, t->tm_year + 1900);
                 return dateBuff;
         } else if (flag == 1) {
-                snprintf(dateBuff, BUFFER, format, arg->minArgs.icon, t->tm_mday, t->tm_mon + 1, t->tm_year + 1900); 
+                snprintf(dateBuff, BUFFER, format, arg->minArgs.icon,
+                         t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
                 return dateBuff;
         }
 
@@ -132,10 +138,11 @@ mm(Args *arg, int flag)
                 }
         }
         fclose(file);
-        float usage = (float)(memTotal - memAvailable) * 1e-6;
+        float usage = (float) (memTotal - memAvailable) * 1e-6;
 
         if (flag == 0) {
-                snprintf(memBuff, BUFFER, "%s%.2fGb",moduleFormatter(arg, usage), usage);
+                snprintf(memBuff, BUFFER, "%s%.2fGb",
+                         moduleFormatter(arg, usage), usage);
                 return memBuff;
         }
         snprintf(memBuff, BUFFER, "%s%.2fGb", arg->minArgs.icon, usage);
@@ -148,7 +155,7 @@ plm(Args *arg, int flag)
 {
         long int cpuTotal = 0;
         long int cpuWork = 0;
-        int i=0;
+        int i = 0;
 
         char *loadBuff = malloc(sizeof(char) * BUFFER);
         char line[1][128];
@@ -165,20 +172,18 @@ plm(Args *arg, int flag)
         while (token != NULL) {
                 i++;
                 token = strtok(NULL, " ");
-                if (i>0 && i<7) {
-                        cpuTotal += atoi(token);
-                }
-                if (i>0 && i<4) {
-                        cpuWork += atoi(token);
-                }
+                if (i > 0 && i < 7) { cpuTotal += atoi(token); }
+                if (i > 0 && i < 4) { cpuWork += atoi(token); }
         }
-        float cpuLoad = fabs((float)(cpuWork - cpuWorkCache) / (float)(cpuTotal - cpuTotalCache) * 100);
+        float cpuLoad = fabs((float) (cpuWork - cpuWorkCache) /
+                             (float) (cpuTotal - cpuTotalCache) * 100);
 
         if (flag == 0) {
-                snprintf(loadBuff, BUFFER, "%s%.2f%%", moduleFormatter(arg, cpuLoad), cpuLoad );
+                snprintf(loadBuff, BUFFER, "%s%.2f%%",
+                         moduleFormatter(arg, cpuLoad), cpuLoad);
         } else {
-                snprintf(loadBuff, BUFFER, "%s%.2f%%", arg->minArgs.icon, cpuLoad);
-        
+                snprintf(loadBuff, BUFFER, "%s%.2f%%", arg->minArgs.icon,
+                         cpuLoad);
         }
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
@@ -196,9 +201,7 @@ ptm(Args *arg, int flag)
         FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
         if (file == NULL) {
                 file = fopen("/sys/class/hwmon/hwmon1/temp1_input", "r");
-                if (file == NULL) {
-                        return fallback;
-                }
+                if (file == NULL) { return fallback; }
         }
 
         fscanf(file, "%d", &temperature);
@@ -206,7 +209,8 @@ ptm(Args *arg, int flag)
         int temp = temperature / 1000;
 
         if (flag == 0) {
-                snprintf(tempBuff, BUFFER, "%s%d°C", moduleFormatter(arg, temp), temp);
+                snprintf(tempBuff, BUFFER, "%s%d°C",
+                         moduleFormatter(arg, temp), temp);
                 return tempBuff;
         }
         snprintf(tempBuff, BUFFER, "%s%d°C", arg->minArgs.icon, temp);
@@ -216,5 +220,9 @@ ptm(Args *arg, int flag)
 static char *
 moduleFormatter(Args *arg, int formatVal)
 {
-        return formatVal <= arg->maxArgs.lowVal ? arg->maxArgs.lowIcon : formatVal >= arg->maxArgs.lowVal && formatVal <= arg->maxArgs.highVal ? arg->maxArgs.midIcon : arg->maxArgs.highIcon;
+        return formatVal <= arg->maxArgs.lowVal ? arg->maxArgs.lowIcon
+             : formatVal >= arg->maxArgs.lowVal &&
+                       formatVal <= arg->maxArgs.highVal
+                 ? arg->maxArgs.midIcon
+                 : arg->maxArgs.highIcon;
 }
