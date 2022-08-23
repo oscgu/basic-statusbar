@@ -24,7 +24,7 @@ static Module modules[] = {
         //{ nvpn, {            0,           2,             "✅",           "❌",           "" },        0},
 
         /* Modules      StaticIcon     Mode */
-        { bm,   { .minArgs.icon = "" }, 1},
+        // { bm,   { .minArgs.icon = "" }, 1},
         { ptm,  { .minArgs.icon = "" }, 1},
         { plm,  { .minArgs.icon = "" }, 1},
         { mm,   { .minArgs.icon = "" }, 1},
