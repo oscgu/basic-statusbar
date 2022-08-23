@@ -7,6 +7,7 @@
 
 /* macros */
 #define LENGTH(X) (sizeof X / sizeof X[0])
+#define DEBUG     TRUE
 
 /* structs */
 typedef struct {
@@ -45,6 +46,8 @@ setroot()
                 strcat(status, text);
                 free(text);
         }
+
+#if DEBUG != TRUE
         Display *d = XOpenDisplay(NULL);
         if (d) dpy = d;
 
@@ -52,6 +55,9 @@ setroot()
         root = RootWindow(dpy, screen);
         XStoreName(dpy, root, status);
         XCloseDisplay(dpy);
+#else
+        printf("%s\n", status);
+#endif
         free(status);
 }
 
