@@ -32,7 +32,7 @@ void
 setroot()
 {
         unsigned int i;
-        char *status = malloc(sizeof(char) * 256);
+        char status[256];
 
         for (i = 0; i < LENGTH(modules); i++) {
                 char *text =
@@ -58,7 +58,6 @@ setroot()
 #else
         printf("%s\n", status);
 #endif
-        free(status);
 }
 
 int
