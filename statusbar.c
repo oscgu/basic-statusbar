@@ -8,6 +8,7 @@
 /* macros */
 #define LENGTH(X) (sizeof X / sizeof X[0])
 #define DEBUG     TRUE
+#define MAX_LEN 256
 
 /* structs */
 typedef struct {
@@ -32,7 +33,7 @@ void
 setroot()
 {
         unsigned int i;
-        char status[256];
+        char status[MAX_LEN];
 
         for (i = 0; i < LENGTH(modules); i++) {
                 char *text =

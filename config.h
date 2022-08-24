@@ -8,7 +8,7 @@
  * Mode: 0
  *
  * Example:
-  { ptm, {            33,           66,             "🧊",           "🌡️",           "🔥" },        0},
+  { ptm, {            33,           66,             "🧊", "🌡️",    "🔥" },        0},
  *
  * Static-Icon Status
  * .minArgs.icon = "your Icon or text"
@@ -20,16 +20,19 @@
 
 static Module modules[] = {
 
-        /* Modules         LowVal       HighVal       LowIcon         MidIcon         HighIcon        Mode */
-        //{ nvpn, {            0,           2,             "✅",           "❌",           "" },        0},
+    /* Modules         LowVal       HighVal       LowIcon         MidIcon
+       HighIcon        Mode */
+    //{ nvpn, {            0,           2,             "✅",           "❌", ""
+    //},        0},
 
-        /* Modules      StaticIcon     Mode */
-        // { bm,   { .minArgs.icon = "" }, 1},
-        { ptm,  { .minArgs.icon = "" }, 1},
-        { plm,  { .minArgs.icon = "" }, 1},
-        { mm,   { .minArgs.icon = "" }, 1},
-        { tm,   { .minArgs.icon = "" }, 1},
-        { dm,   { .minArgs.icon = "" }, 1},
+    /* Modules      StaticIcon     Mode */
+    // { bm,   { .minArgs.icon = "" }, 1},
+    {ut, {.minArgs.icon = ""}, 1},  
+    {ptm, {.minArgs.icon = ""}, 1},
+    {plm, {.minArgs.icon = ""}, 1}, 
+    {mm, {.minArgs.icon = ""}, 1},
+    {tm, {.minArgs.icon = ""}, 1},  
+    {dm, {.minArgs.icon = ""}, 1},
 };
 
 /* char between modules */

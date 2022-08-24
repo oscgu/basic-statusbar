@@ -20,6 +20,7 @@ typedef struct {
 } Args;
 
 /* function declarations */
+char *ut(Args *, int);
 char *dm(Args *, int);
 char *tm(Args *, int);
 char *mm(Args *, int);

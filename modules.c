@@ -4,10 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/sysinfo.h>
 
 /* Macros */
-#define BUFFER    128
-#define LENGTH(X) (sizeof X / sizeof X[0])
+#define BUFFER      128
+#define STATUS_SIZE 30
+#define LENGTH(X)   (sizeof X / sizeof X[0])
 
 /* variables */
 static long int cpuWorkCache = 0;
@@ -16,21 +18,33 @@ static long int cpuTotalCache = 0;
 /* function declarations */
 static char *moduleFormatter(Args *arg, int formatVal);
 
+char *
+ut(Args *arg, int flag)
+{
+    char *status = malloc(sizeof(char) * STATUS_SIZE);
+    struct sysinfo si;
+    sysinfo(&si);
+    double uptimeDays = (double) si.uptime / 60.0 / 60.0 / 24.0;
+    snprintf(status, STATUS_SIZE, "%.2lf", uptimeDays);
+
+
+    return status;
+}
+
 /* function implementations */
 char *
 bm(Args *arg, int flag)
 {
-        char *status = malloc(sizeof(char) * 30);
-        int bat0p;
-        int bat1p;
+        char *status = malloc(sizeof(char) * STATUS_SIZE);
 
         FILE *bat0 = fopen("/sys/class/power_supply/BAT0/capacity", "r");
-        FILE *bat1 = fopen("/sys/class/power_supply/BAT1/capacity", "r");
-
+        int bat0p;
         fscanf(bat0, "%d", &bat0p);
-        fscanf(bat1, "%d", &bat1p);
-
         fclose(bat0);
+
+        FILE *bat1 = fopen("/sys/class/power_supply/BAT1/capacity", "r");
+        int bat1p;
+        fscanf(bat1, "%d", &bat1p);
         fclose(bat1);
 
         snprintf(status, 30, "Bat: %d%% | %d%%", bat0p, bat1p);
@@ -41,7 +55,7 @@ bm(Args *arg, int flag)
 char *
 nvpn(Args *arg, int flag)
 {
-        char *status = malloc(sizeof(char) * 30);
+        char *status = malloc(sizeof(char) * STATUS_SIZE);
         char buff[1035];
         char vpnstatus[20];
         int state;
