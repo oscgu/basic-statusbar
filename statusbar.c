@@ -6,10 +6,10 @@
 #include <unistd.h>
 
 /* macros */
-#define LEN(X)   (sizeof X / sizeof X[0])
-#define DEBUG    TRUE
-#define MAX_STATUS_LEN  256
-#define TEXT_LEN 24
+#define LEN(X)         (sizeof X / sizeof X[0])
+#define DEBUG          TRUE
+#define MAX_STATUS_LEN 256
+#define TEXT_LEN       24
 
 /* structs */
 typedef struct {
@@ -33,21 +33,20 @@ static Window root;
 void
 setroot()
 {
-        unsigned int i;
         char status[MAX_STATUS_LEN];
+
         char text[TEXT_LEN];
+        Module mfirst = modules[0];
+        mfirst.func(&mfirst.args, mfirst.flag, status, LEN(status));
 
+        unsigned int i;
+        for (i = 1; i < LEN(modules); i++) {
+                Module m = modules[i];
+                m.func(&m.args, m.flag, text, LEN(text));
 
-        for (i = 0; i < LEN(modules); i++) {
-                modules[i].func(&modules[i].args, modules[i].flag, text,
-                                LEN(text));
-
-                if (i == 0) {
-                        strcpy(status, text);
-                        continue;
-                }
                 strcat(status, &delimitter);
                 strcat(status, text);
+                text[0] = '\0';
         }
 
 #if DEBUG == TRUE
