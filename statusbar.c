@@ -6,13 +6,14 @@
 #include <unistd.h>
 
 /* macros */
-#define LENGTH(X) (sizeof X / sizeof X[0])
-#define DEBUG     TRUE
-#define MAX_LEN 256
+#define LEN(X)   (sizeof X / sizeof X[0])
+#define DEBUG    TRUE
+#define MAX_STATUS_LEN  256
+#define TEXT_LEN 24
 
 /* structs */
 typedef struct {
-        char *(*func)(Args *, int);
+        void (*func)(Args *, int, char *, int);
         Args args;
         int flag;
 } Module;
@@ -33,22 +34,25 @@ void
 setroot()
 {
         unsigned int i;
-        char status[MAX_LEN];
+        char status[MAX_STATUS_LEN];
+        char text[TEXT_LEN];
 
-        for (i = 0; i < LENGTH(modules); i++) {
-                char *text =
-                    modules[i].func(&modules[i].args, modules[i].flag);
+
+        for (i = 0; i < LEN(modules); i++) {
+                modules[i].func(&modules[i].args, modules[i].flag, text,
+                                LEN(text));
+
                 if (i == 0) {
                         strcpy(status, text);
-                        free(text);
                         continue;
                 }
                 strcat(status, &delimitter);
                 strcat(status, text);
-                free(text);
         }
 
-#if DEBUG != TRUE
+#if DEBUG == TRUE
+        printf("%s\n", status);
+#else
         Display *d = XOpenDisplay(NULL);
         if (d) dpy = d;
 
@@ -56,8 +60,6 @@ setroot()
         root = RootWindow(dpy, screen);
         XStoreName(dpy, root, status);
         XCloseDisplay(dpy);
-#else
-        printf("%s\n", status);
 #endif
 }
 

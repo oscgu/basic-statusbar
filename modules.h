@@ -20,11 +20,11 @@ typedef struct {
 } Args;
 
 /* function declarations */
-char *ut(Args *, int);
-char *dm(Args *, int);
-char *tm(Args *, int);
-char *mm(Args *, int);
-char *plm(Args *, int);
-char *ptm(Args *, int);
-char *nvpn(Args *, int);
-char *bm(Args *arg, int flag);
+void ut(Args *, int, char *, int);
+void dm(Args *, int, char *, int);
+void tm(Args *, int, char *, int);
+void mm(Args *, int, char *, int);
+void plm(Args *, int, char *, int);
+void ptm(Args *, int, char *, int);
+void nvpn(Args *, int, char *, int);
+void bm(Args *arg, int flag, char *, int);

@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <sys/sysinfo.h>
+#include <time.h>
 
 /* Macros */
 #define BUFFER      128
@@ -18,25 +18,21 @@ static long int cpuTotalCache = 0;
 /* function declarations */
 static char *moduleFormatter(Args *arg, int formatVal);
 
-char *
-ut(Args *arg, int flag)
+void
+ut(Args *arg, int flag, char *buff, int bufflen)
 {
-    char *template = "%.2lfd";
+        char *template = "%.2lfd";
 
-    struct sysinfo si;
-    sysinfo(&si);
-    double uptimeDays = (double) si.uptime / 60.0 / 60.0 / 24.0;
+        struct sysinfo si;
+        sysinfo(&si);
+        double uptimeDays = (double) si.uptime / 60.0 / 60.0 / 24.0;
 
-    int statusSize = strlen(template) - 4 + 6; //9999.99d
-    char *status = malloc(statusSize);
-    snprintf(status, statusSize, template, uptimeDays);
-
-    return status;
+        snprintf(buff, bufflen, template, uptimeDays);
 }
 
 /* function implementations */
-char *
-bm(Args *arg, int flag)
+void
+bm(Args *arg, int flag, char *buff, int bufflen)
 {
         char *template = "Bat: %d%% | %d%%";
 
@@ -50,26 +46,21 @@ bm(Args *arg, int flag)
         fscanf(bat1, "%d", &bat1p);
         fclose(bat1);
 
-        int statusSize = strlen(template) - 6 + 3 + 3; //6 = placeholders, 3 = bat0|1
-        char *status = malloc(statusSize);
-        snprintf(status, statusSize, template, bat0p, bat1p);
-
-        return status;
+        snprintf(buff, bufflen, template, bat0p, bat1p);
 }
 
-char *
-nvpn(Args *arg, int flag)
+void
+nvpn(Args *arg, int flag, char *buff, int bufflen)
 {
-        char *status = malloc(sizeof(char) * STATUS_SIZE);
-        char buff[1035];
+        char textbuff[1035];
         char vpnstatus[20];
         int state;
 
         FILE *fp;
         fp = popen("/bin/nordvpn status", "r");
 
-        while (fscanf(fp, " %1023s", buff) == 1) {
-                if (strcmp(buff, "Status:") == 0) {
+        while (fscanf(fp, " %1023s", textbuff) == 1) {
+                if (strcmp(textbuff, "Status:") == 0) {
                         fscanf(fp, " %s", vpnstatus);
                 }
         }
@@ -83,77 +74,65 @@ nvpn(Args *arg, int flag)
 
         if (flag == 1) {
                 if (!state) {
-                        snprintf(status, 50, "%s%s", arg->minArgs.icon, "ON");
-                        return status;
+                        snprintf(buff, bufflen, "%s%s", arg->minArgs.icon, "ON");
+                        return;
                 }
-                snprintf(status, 50, "%s%s", arg->minArgs.icon, "OFF");
-                return status;
+                snprintf(buff, bufflen, "%s%s", arg->minArgs.icon, "OFF");
+                return;
         }
-        snprintf(status, 50, "vpn %s", moduleFormatter(arg, state));
-        return status;
+
+        snprintf(buff, bufflen, "vpn %s", moduleFormatter(arg, state));
 }
 
-char *
-tm(Args *arg, int flag)
+void
+tm(Args *arg, int flag, char *buff, int bufflen)
 {
         char *format = "%s%02d:%02d";
 
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
 
-        int statusSize = strlen(format) - 5;
-        char *timeBuff = malloc(statusSize);
-
         if (flag == 0) {
-                snprintf(timeBuff, statusSize, format,
+                snprintf(buff, bufflen, format,
                          moduleFormatter(arg, t->tm_hour), t->tm_hour,
                          t->tm_min);
-                return timeBuff;
+                return;
         }
-        snprintf(timeBuff, statusSize, format, arg->minArgs.icon, t->tm_hour,
+        snprintf(buff, bufflen, format, arg->minArgs.icon, t->tm_hour,
                  t->tm_min);
-
-        return timeBuff;
 }
 
-char *
-dm(Args *arg, int flag)
+void
+dm(Args *arg, int flag, char *buff, int bufflen)
 {
         char *format = "%s%02d.%02d.%d";
-        int statusSize = 11;
-        char *dateBuff = malloc(statusSize);
 
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
-        snprintf(dateBuff, statusSize, format, "", t->tm_mday, t->tm_mon + 1,
-                 t->tm_year + 1900);
 
         if (flag == 0) {
-                snprintf(dateBuff, statusSize, format,
+                snprintf(buff, bufflen, format,
                          moduleFormatter(arg, t->tm_mon + 1), t->tm_mday,
                          t->tm_mon + 1, t->tm_year + 1900);
-                snprintf(dateBuff, statusSize, format, arg->minArgs.icon,
-                         t->tm_mday, t->tm_mon + 1, t->tm_year + 1900);
-                return dateBuff;
+                return;
         }
 
-        return dateBuff;
+        snprintf(buff, bufflen, format, "", t->tm_mday, t->tm_mon + 1,
+                 t->tm_year + 1900);
 }
 
-char *
-mm(Args *arg, int flag)
+void
+mm(Args *arg, int flag, char *buff, int bufflen)
 {
         char buffer[1024] = "";
 
-        char *format = "%s%.2fGb";
-        int statusSize = 8;
-        char *status = malloc(statusSize);
+        char *format = "%s%3.2fGb";
 
         int memTotal = 0;
         int memAvailable = 0;
 
         FILE *file = fopen("/proc/meminfo", "r");
-        if (file == NULL) return status;
+        if (file == NULL) return;
 
         while (fscanf(file, " %1023s", buffer) == 1) {
                 if (strcmp(buffer, "MemTotal:") == 0) {
@@ -168,30 +147,26 @@ mm(Args *arg, int flag)
         float usage = (float) (memTotal - memAvailable) * 1e-6;
 
         if (flag == 0) {
-                snprintf(status, statusSize, format,
+                snprintf(buff, bufflen, format,
                          moduleFormatter(arg, usage), usage);
-                return status;
+                return;
         }
-        snprintf(status, statusSize, format, arg->minArgs.icon, usage);
-
-        return status;
+        snprintf(buff, bufflen, format, arg->minArgs.icon, usage);
 }
 
-char *
-plm(Args *arg, int flag)
+void
+plm(Args *arg, int flag, char *buff, int bufflen)
 {
         long int cpuTotal = 0;
         long int cpuWork = 0;
         int i = 0;
 
-        char *format = "%s%.2f%%";
-        int statusSize = 7;
-        char *status = malloc(sizeof(char) * BUFFER);
+        char *format = "%s%3.2f%%";
 
         char line[1][128];
 
         FILE *file = fopen("/proc/stat", "r");
-        if (file == NULL) return "";
+        if (file == NULL) return;
 
         fgets(line[0], 100, file);
         line[0][strlen(line[0]) - 1] = '\0';
@@ -208,33 +183,31 @@ plm(Args *arg, int flag)
         float cpuLoad = fabs((float) (cpuWork - cpuWorkCache) /
                              (float) (cpuTotal - cpuTotalCache) * 100);
 
-        if (flag == 0) {
-                snprintf(status, statusSize, format,
-                         moduleFormatter(arg, cpuLoad), cpuLoad);
-        } else {
-                snprintf(status, statusSize, format, arg->minArgs.icon,
-                         cpuLoad);
-        }
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
 
-        return status;
+        if (flag == 0) {
+                snprintf(buff, bufflen, format,
+                         moduleFormatter(arg, cpuLoad), cpuLoad);
+                return;
+        } 
+
+        snprintf(buff, bufflen, format, arg->minArgs.icon,
+                 cpuLoad);
 }
 
-char *
-ptm(Args *arg, int flag)
+void
+ptm(Args *arg, int flag, char *buff, int bufflen)
 {
         int temperature = 0;
 
         char *format = "%s%d°C";
-        int statusSize = 7;
-        char *status = malloc(statusSize);
         char *fallback = "";
 
         FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
         if (file == NULL) {
                 file = fopen("/sys/class/hwmon/hwmon1/temp1_input", "r");
-                if (file == NULL) { return fallback; }
+                if (file == NULL) return;
         }
 
         fscanf(file, "%d", &temperature);
@@ -242,13 +215,11 @@ ptm(Args *arg, int flag)
         int temp = temperature / 1000;
 
         if (flag == 0) {
-                snprintf(status, statusSize, format,
+                snprintf(buff, bufflen, format,
                          moduleFormatter(arg, temp), temp);
-                return status;
+                return;
         }
-        snprintf(status, statusSize, format, arg->minArgs.icon, temp);
-
-        return status;
+        snprintf(buff, bufflen, format, arg->minArgs.icon, temp);
 }
 
 static char *
