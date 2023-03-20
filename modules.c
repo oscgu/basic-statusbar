@@ -10,13 +10,48 @@
 #define BUFFER      128
 #define STATUS_SIZE 30
 #define LENGTH(X)   (sizeof X / sizeof X[0])
+#define TO_KBITS(b) ((float)(b) / 125)
 
 /* variables */
 static long int cpuWorkCache = 0;
 static long int cpuTotalCache = 0;
 
+static unsigned long long int netReCache = 0;
+static unsigned long long int netSeCache = 0;
+
 /* function declarations */
 static char *moduleFormatter(Args *arg, int formatVal);
+
+void
+nm(Args *arg, int flag, char *buff, int bufflen)
+{
+    unsigned long long int bytes_re, bytes_se;
+    char *template = "⬆ %.2fKbi | ⬇ %.2fKbi";
+
+    FILE *fr = fopen("/sys/class/net/eth0/statistics/rx_bytes", "r");
+    if (fr == NULL) {
+        return;
+    }
+
+    FILE *fs = fopen("/sys/class/net/eth0/statistics/tx_bytes", "r");
+    if (fs == NULL) {
+        return;
+    }
+
+    fscanf(fr, "%llu", &bytes_re);
+    fclose(fr);
+
+    fscanf(fs, "%llu", &bytes_se);
+    fclose(fs);
+
+    unsigned long long int reDiff = bytes_re - netReCache;
+    unsigned long long int seDiff = bytes_se - netSeCache;
+
+    snprintf(buff, bufflen, template, TO_KBITS(seDiff), TO_KBITS(reDiff));
+
+    netReCache = bytes_re;
+    netSeCache = bytes_se;
+}
 
 void
 ut(Args *arg, int flag, char *buff, int bufflen)

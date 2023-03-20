@@ -31,11 +31,12 @@ exec /basic-statusbar/statusbar
 
 # Where are the values from
 
-| Module                      | Source                              |
-| --------------------------- | ----------------------------------- |
-| MemoryModule        (mm)    | /proc/mem                           |
-| ProcessorLoadModule (plm)   | /proc/stats                         |
-| ProcessorTempModule (ptm)   | /sys/class/hwmon/hwmon1/temp1_input |
-| Date/TimeModule     (dm/tm) | time.h                              |
-| NordVPN             (nvpn)  | /bin/nordvpn status                 |
-| Uptime              (ut)    | sys/sysinfo.h                       |
+| Module                      | Source                                  |
+| --------------------------- | ----------------------------------------|
+| MemoryModule        (mm)    | /proc/mem                               |
+| ProcessorLoadModule (plm)   | /proc/stats                             |
+| ProcessorTempModule (ptm)   | /sys/class/hwmon/hwmon1/temp1_input     |
+| Date/TimeModule     (dm/tm) | time.h                                  |
+| NordVPN             (nvpn)  | /bin/nordvpn status                     |
+| Uptime              (ut)    | /sys/sysinfo.h                          |
+| Network             (nm)    | /sys/class/net/eth0/statistics/rx_bytes |

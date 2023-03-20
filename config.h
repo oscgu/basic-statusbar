@@ -28,6 +28,7 @@ static Module modules[] = {
     /* Modules      StaticIcon     Mode */
     // { bm,   { .minArgs.icon = "" }, 1},
     {ut, {.minArgs.icon = ""}, 1},  
+    {nm, {.minArgs.icon = ""}, 1},  
     {ptm, {.minArgs.icon = ""}, 1},
     {plm, {.minArgs.icon = ""}, 1}, 
     {mm, {.minArgs.icon = ""}, 1},

@@ -20,6 +20,7 @@ typedef struct {
 } Args;
 
 /* function declarations */
+void nm(Args *arg, int flag, char *buff, int bufflen);
 void ut(Args *, int, char *, int);
 void dm(Args *, int, char *, int);
 void tm(Args *, int, char *, int);
