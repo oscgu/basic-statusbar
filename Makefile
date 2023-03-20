@@ -15,5 +15,10 @@ statusbar.o: statusbar.c
 modules.o: modules.c modules.h
 	${CC} -c ${CFLAGS} modules.c
 
+debug: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) -pg
+	valgrind --tool=memcheck --leak-check=full ./debug
+
 clean:
 	rm -f statusbar statusbar.o modules.o
+
