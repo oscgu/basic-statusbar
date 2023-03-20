@@ -1,4 +1,5 @@
 #include "modules.h"
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,9 +8,10 @@
 
 /* macros */
 #define LEN(X)         (sizeof X / sizeof X[0])
-#define DEBUG          TRUE
 #define MAX_STATUS_LEN 256
 #define TEXT_LEN       24
+
+//#define DEBUG
 
 /* structs */
 typedef struct {
@@ -21,21 +23,13 @@ typedef struct {
 /* config file */
 #include "config.h"
 
-/* function declarations */
-static void setroot();
-
-/* variables */
-static Display *dpy;
-static int screen;
-static Window root;
-
 /* function implementations */
 void
-setroot()
+setroot(Display *dpy, Window root)
 {
         char status[MAX_STATUS_LEN];
-
         char text[TEXT_LEN];
+
         Module mfirst = modules[0];
         mfirst.func(&mfirst.args, mfirst.flag, status, LEN(status));
 
@@ -49,24 +43,24 @@ setroot()
                 text[0] = '\0';
         }
 
-#if DEBUG == TRUE
-        printf("%s\n", status);
-#else
-        Display *d = XOpenDisplay(NULL);
-        if (d) dpy = d;
-
-        screen = DefaultScreen(dpy);
-        root = RootWindow(dpy, screen);
         XStoreName(dpy, root, status);
-        XCloseDisplay(dpy);
-#endif
 }
 
 int
 main()
 {
         for (;;) {
-                setroot();
+                Display *dpy;
+
+                Display *d = XOpenDisplay(NULL);
+                if (d) dpy = d;
+
+                int screen = DefaultScreen(dpy);
+                Window root = RootWindow(dpy, screen);
+
+                setroot(dpy, root);
                 sleep(1);
+                XCloseDisplay(dpy);
         }
 }
+
