@@ -2,6 +2,8 @@
 
 A very basic statusbar for **[dwm](https://dwm.suckless.org)** I quickly threw together for my fresh install :)
 
+![statusbar](https://github.com/oscgu/basic-statusbar/assets/94227101/7a24b018-8c61-4f9a-93d2-28d934d8516e)
+
 # Prerequisites
 
 Make sure you have applied the libxft-bgra patch and this removed
