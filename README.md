@@ -12,10 +12,9 @@ FcBool iscol;
 
 if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
 
-XftFontClose(drw->dpy, xfont);
+    XftFontClose(drw->dpy, xfont);
 
-return NULL;
-
+    return NULL;
 }
 ```
 
@@ -40,3 +39,5 @@ exec /basic-statusbar/statusbar
 | NordVPN             (nvpn)  | /bin/nordvpn status                     |
 | Uptime              (ut)    | /sys/sysinfo.h                          |
 | Network             (nm)    | /sys/class/net/eth0/statistics/rx_bytes |
+| BatteryModule       (bm)    | /sys/class/power_suply/BAT0/capacity    |
+| BatteryChargingMode (bcm)   | /sys/class/power_suply/AC/online        |
