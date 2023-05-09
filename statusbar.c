@@ -15,9 +15,8 @@
 
 /* structs */
 typedef struct {
-        void (*func)(Args *, int, char *, int);
+        void (*func)(Args *, char *, int);
         Args args;
-        int flag;
 } Module;
 
 /* config file */
@@ -31,36 +30,39 @@ setroot(Display *dpy, Window root)
         char text[TEXT_LEN];
 
         Module mfirst = modules[0];
-        mfirst.func(&mfirst.args, mfirst.flag, status, LEN(status));
+        mfirst.func(&mfirst.args, status, LEN(status));
 
         unsigned int i;
         for (i = 1; i < LEN(modules); i++) {
                 Module m = modules[i];
-                m.func(&m.args, m.flag, text, LEN(text));
+                m.func(&m.args, text, LEN(text));
 
                 strcat(status, &delimitter);
                 strcat(status, text);
                 text[0] = '\0';
         }
-
+        printf("%s\n", status);
         XStoreName(dpy, root, status);
+        XFlush(dpy);
 }
 
 int
-main()
+main(void)
 {
+        Display *dpy = XOpenDisplay(NULL);
+        if (dpy == NULL) {
+            fprintf(stderr, "could not open display");
+            exit(-1);
+        }
+
+        int screen = DefaultScreen(dpy);
+        Window root = RootWindow(dpy, screen);
+
         for (;;) {
-                Display *dpy;
-
-                Display *d = XOpenDisplay(NULL);
-                if (d) dpy = d;
-
-                int screen = DefaultScreen(dpy);
-                Window root = RootWindow(dpy, screen);
-
                 setroot(dpy, root);
                 sleep(1);
-                XCloseDisplay(dpy);
         }
+
+        XCloseDisplay(dpy);
 }
 

@@ -22,11 +22,29 @@ static unsigned long long int netSeCache = 0;
 /* function declarations */
 static char *moduleFormatter(Args *arg, int formatVal);
 
+char * getIcon(Args *args, int value);
+
 void
-nm(Args *arg, int flag, char *buff, int bufflen)
+bcm(Args *arg, char *buff, int bufflen)
+{
+    int ch_state;
+
+    FILE *fr = fopen("/sys/class/power_supply/AC/online", "r");
+    if (fr == NULL) {
+        return;
+    }
+
+    fscanf(fr, "%d", &ch_state);
+    fclose(fr);
+
+    snprintf(buff, bufflen, "%s", getIcon(arg, ch_state));
+}
+
+void
+nm(Args *arg, char *buff, int bufflen)
 {
     unsigned long long int bytes_re, bytes_se;
-    char *template = "⬆ %.2fKbi | ⬇ %.2fKbi";
+    char *template = "⬆ %.2fKi ⬇ %.2fKi";
 
     FILE *fr = fopen("/sys/class/net/eth0/statistics/rx_bytes", "r");
     if (fr == NULL) {
@@ -54,42 +72,43 @@ nm(Args *arg, int flag, char *buff, int bufflen)
 }
 
 void
-ut(Args *arg, int flag, char *buff, int bufflen)
+ut(Args *arg, char *buff, int bufflen)
 {
-        char *template = "%.2lfd";
+        char *template = "%s%.2lfd";
 
         struct sysinfo si;
         sysinfo(&si);
         double uptimeDays = (double) si.uptime / 60.0 / 60.0 / 24.0;
 
-        snprintf(buff, bufflen, template, uptimeDays);
+        snprintf(buff, bufflen, template, getIcon(arg, uptimeDays), uptimeDays);
 }
 
 /* function implementations */
 void
-bm(Args *arg, int flag, char *buff, int bufflen)
+bm(Args *arg, char *buff, int bufflen)
 {
-        char *template = "Bat: %d%% | %d%%";
+        char *template = "%s  %d%%";
 
         FILE *bat0 = fopen("/sys/class/power_supply/BAT0/capacity", "r");
         int bat0p;
         fscanf(bat0, "%d", &bat0p);
         fclose(bat0);
 
+            snprintf(buff, bufflen, template, getIcon(arg, bat0p), bat0p);
+
+        /* TODO handle multiple bats
         FILE *bat1 = fopen("/sys/class/power_supply/BAT1/capacity", "r");
         int bat1p;
         fscanf(bat1, "%d", &bat1p);
         fclose(bat1);
-
-        snprintf(buff, bufflen, template, bat0p, bat1p);
+        */
 }
 
 void
-nvpn(Args *arg, int flag, char *buff, int bufflen)
+nvpn(Args *arg, char *buff, int bufflen)
 {
         char textbuff[1035];
         char vpnstatus[20];
-        int state;
 
         FILE *fp;
         fp = popen("/bin/nordvpn status", "r");
@@ -102,62 +121,40 @@ nvpn(Args *arg, int flag, char *buff, int bufflen)
         pclose(fp);
 
         if (strcmp(vpnstatus, "Connected") == 0) {
-                state = 0;
+                snprintf(buff, bufflen, "%s", getIcon(arg, 0));
         } else {
-                state = 1;
+                snprintf(buff, bufflen, "%s", getIcon(arg, 1));
         }
-
-        if (flag == 1) {
-                if (!state) {
-                        snprintf(buff, bufflen, "%s%s", arg->minArgs.icon, "ON");
-                        return;
-                }
-                snprintf(buff, bufflen, "%s%s", arg->minArgs.icon, "OFF");
-                return;
-        }
-
-        snprintf(buff, bufflen, "vpn %s", moduleFormatter(arg, state));
 }
 
 void
-tm(Args *arg, int flag, char *buff, int bufflen)
+tm(Args *arg, char *buff, int bufflen)
 {
         char *format = "%s%02d:%02d";
 
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
 
-        if (flag == 0) {
-                snprintf(buff, bufflen, format,
-                         moduleFormatter(arg, t->tm_hour), t->tm_hour,
-                         t->tm_min);
-                return;
-        }
-        snprintf(buff, bufflen, format, arg->minArgs.icon, t->tm_hour,
+        snprintf(buff, bufflen, format,
+                 getIcon(arg, 0), t->tm_hour,
                  t->tm_min);
 }
 
 void
-dm(Args *arg, int flag, char *buff, int bufflen)
+dm(Args *arg, char *buff, int bufflen)
 {
         char *format = "%s%02d.%02d.%d";
 
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
 
-        if (flag == 0) {
-                snprintf(buff, bufflen, format,
-                         moduleFormatter(arg, t->tm_mon + 1), t->tm_mday,
-                         t->tm_mon + 1, t->tm_year + 1900);
-                return;
-        }
-
-        snprintf(buff, bufflen, format, "", t->tm_mday, t->tm_mon + 1,
-                 t->tm_year + 1900);
+        snprintf(buff, bufflen, format,
+                 getIcon(arg, 0), t->tm_mday,
+                 t->tm_mon + 1, t->tm_year + 1900);
 }
 
 void
-mm(Args *arg, int flag, char *buff, int bufflen)
+mm(Args *arg, char *buff, int bufflen)
 {
         char buffer[1024] = "";
 
@@ -181,16 +178,12 @@ mm(Args *arg, int flag, char *buff, int bufflen)
 
         float usage = (float) (memTotal - memAvailable) * 1e-6;
 
-        if (flag == 0) {
-                snprintf(buff, bufflen, format,
-                         moduleFormatter(arg, usage), usage);
-                return;
-        }
-        snprintf(buff, bufflen, format, arg->minArgs.icon, usage);
+        snprintf(buff, bufflen, format,
+                 getIcon(arg, usage), usage);
 }
 
 void
-plm(Args *arg, int flag, char *buff, int bufflen)
+plm(Args *arg, char *buff, int bufflen)
 {
         long int cpuTotal = 0;
         long int cpuWork = 0;
@@ -221,18 +214,12 @@ plm(Args *arg, int flag, char *buff, int bufflen)
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
 
-        if (flag == 0) {
-                snprintf(buff, bufflen, format,
-                         moduleFormatter(arg, cpuLoad), cpuLoad);
-                return;
-        } 
-
-        snprintf(buff, bufflen, format, arg->minArgs.icon,
-                 cpuLoad);
+        snprintf(buff, bufflen, format,
+                 getIcon(arg, cpuLoad), cpuLoad);
 }
 
 void
-ptm(Args *arg, int flag, char *buff, int bufflen)
+ptm(Args *arg, char *buff, int bufflen)
 {
         int temperature = 0;
 
@@ -249,20 +236,18 @@ ptm(Args *arg, int flag, char *buff, int bufflen)
         fclose(file);
         int temp = temperature / 1000;
 
-        if (flag == 0) {
-                snprintf(buff, bufflen, format,
-                         moduleFormatter(arg, temp), temp);
-                return;
-        }
-        snprintf(buff, bufflen, format, arg->minArgs.icon, temp);
+        snprintf(buff, bufflen, format, getIcon(arg, temp), temp);
 }
 
-static char *
-moduleFormatter(Args *arg, int formatVal)
-{
-        return formatVal <= arg->maxArgs.lowVal ? arg->maxArgs.lowIcon
-             : formatVal >= arg->maxArgs.lowVal &&
-                       formatVal <= arg->maxArgs.highVal
-                 ? arg->maxArgs.midIcon
-                 : arg->maxArgs.highIcon;
+char *
+getIcon(Args *args, int value) {
+    int i;
+    for (i=0;i<args->len; i++) {
+        if (args->vals[i] > value) {
+            return args->icons[i];
+        }
+    }
+
+    return args->icons[i - 1];
 }
+

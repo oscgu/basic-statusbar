@@ -1,31 +1,18 @@
 /* structs */
 typedef struct {
-        char *icon;
-} MinimalArgs;
-
-typedef struct {
-        int lowVal;
-        int highVal;
-        char *lowIcon;
-        char *midIcon;
-        char *highIcon;
-} MaxArgs;
-
-typedef struct {
-        union {
-                MaxArgs maxArgs;
-                MinimalArgs minArgs;
-        };
-        int flag;
+        int len;
+        int vals[5];
+        char icons[10][20];
 } Args;
 
 /* function declarations */
-void nm(Args *arg, int flag, char *buff, int bufflen);
-void ut(Args *, int, char *, int);
-void dm(Args *, int, char *, int);
-void tm(Args *, int, char *, int);
-void mm(Args *, int, char *, int);
-void plm(Args *, int, char *, int);
-void ptm(Args *, int, char *, int);
-void nvpn(Args *, int, char *, int);
-void bm(Args *arg, int flag, char *, int);
+void bcm(Args *, char *, int);
+void nm(Args *, char *, int);
+void ut(Args *, char *, int);
+void dm(Args *, char *, int);
+void tm(Args *, char *, int);
+void mm(Args *, char *, int);
+void plm(Args *, char *, int);
+void ptm(Args *, char *, int);
+void nvpn(Args *, char *, int);
+void bm(Args *, char *, int);

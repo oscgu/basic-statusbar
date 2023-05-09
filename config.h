@@ -1,39 +1,20 @@
 /*
  * Config file for setting up the statusbar
  *
- * Multi-Icon Status
- * LowVal: Everything below it gets the LowIcon
- * HighVal: Everything above it gets the HighIcon
- * Values between LowVal and HighVal get the MidIcon
- * Mode: 0
- *
- * Example:
-  { ptm, {            33,           66,             "🧊", "🌡️",    "🔥" },        0},
- *
- * Static-Icon Status
- * .minArgs.icon = "your Icon or text"
- * Mode: 1
- *
- * Example:
-  { mm, {   .minArgs.icon = "Memory: " },       1},
  */
 
 static Module modules[] = {
 
-    /* Modules         LowVal       HighVal       LowIcon         MidIcon
-       HighIcon        Mode */
-    //{ nvpn, {            0,           2,             "✅",           "❌", ""
-    //},        0},
-
-    /* Modules      StaticIcon     Mode */
-    // { bm,   { .minArgs.icon = "" }, 1},
-    {ut, {.minArgs.icon = ""}, 1},  
-    {nm, {.minArgs.icon = ""}, 1},  
-    {ptm, {.minArgs.icon = ""}, 1},
-    {plm, {.minArgs.icon = ""}, 1}, 
-    {mm, {.minArgs.icon = ""}, 1},
-    {tm, {.minArgs.icon = ""}, 1},  
-    {dm, {.minArgs.icon = ""}, 1},
+    { nvpn, { 2, {0, 1}, { "", "" }}},
+    { bcm, {2, {1, 2}, { "", "" }}},
+    { bm,   { 4, {25, 50, 90},  { "", "", "", "" }}},
+    { ut,  { 1, {0},   {" "}}},  
+    //{nm, {.minArgs.icon = ""}, 1},  
+    {ptm,  { 1, {0},  {" "}}},
+    {plm,  { 1, {0},  {" "}}}, 
+    {mm,  { 1, {0},  {"󰍛 "}}},
+    {tm,  { 1, {0},  {" "}}},  
+    {dm,  { 1, {0},  {" "}}},
 };
 
 /* char between modules */
