@@ -20,8 +20,6 @@ static unsigned long long int netReCache = 0;
 static unsigned long long int netSeCache = 0;
 
 /* function declarations */
-static char *moduleFormatter(Args *arg, int formatVal);
-
 char * getIcon(Args *args, int value);
 
 void
