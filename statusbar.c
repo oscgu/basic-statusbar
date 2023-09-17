@@ -1,4 +1,4 @@
-#include "modules.h"
+#include "arg.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <stdio.h>
@@ -12,12 +12,6 @@
 #define TEXT_LEN       24
 
 //#define DEBUG
-
-/* structs */
-typedef struct {
-        void (*func)(Args *, char *, int);
-        Args args;
-} Module;
 
 /* config file */
 #include "config.h"

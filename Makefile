@@ -1,24 +1,22 @@
-.POSIX:
-OBJ = statusbar.c modules.c
 CC = cc
-CFLAGS = -Os -pedantic -Wall -fsanitize=address
+CFLAGS = -Os -pedantic -Wall -Wno-deprecated-declarations -Wextra -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L
 LIBS = -lX11
+SRC = $(wildcard *.c)
+HEADER = $(wildcard *.h)
+OBJ = $(SRC:.c=.o)
 
 all: statusbar config.h
 
-statusbar: statusbar.o modules.o config.h
-	${CC} ${CFLAGS} -o $@ ${OBJ} ${LIBS}
+statusbar: ${OBJ}
+	${CC} ${OBJ} ${LIBS} -o $@
 
-statusbar.o: statusbar.c
-	${CC} -c ${CFLAGS} $^
-
-modules.o: modules.c modules.h
-	${CC} -c ${CFLAGS} $^
+%.o: %.c $(HEADER)
+	${CC} ${CFLAGS} -c $< -o $@
 
 debug: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) -pg
 	valgrind --tool=memcheck --leak-check=full ./debug
 
 clean:
-	rm -f statusbar statusbar.o modules.o
+	rm -f statusbar *.o
 
