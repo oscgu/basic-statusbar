@@ -11,8 +11,6 @@
 #define MAX_STATUS_LEN 256
 #define TEXT_LEN       24
 
-//#define DEBUG
-
 /* config file */
 #include "config.h"
 
@@ -35,7 +33,6 @@ setroot(Display *dpy, Window root)
                 strcat(status, text);
                 text[0] = '\0';
         }
-        printf("%s\n", status);
         XStoreName(dpy, root, status);
         XFlush(dpy);
 }
