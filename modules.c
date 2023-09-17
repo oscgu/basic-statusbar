@@ -21,19 +21,18 @@ static unsigned long long int netSeCache = 0;
 
 /* function declarations */
 char * getIcon(Args *args, int value);
+int read_temp(char *path);
 
 void
 bcm(Args *arg, char *buff, int bufflen)
 {
     int ch_state;
 
-    FILE *fr = fopen("/sys/class/power_supply/AC/online", "r");
-    if (fr == NULL) {
-        return;
-    }
+    FILE *fp = fopen("/sys/class/power_supply/AC/online", "r");
+    if (!fp) return;
 
-    fscanf(fr, "%d", &ch_state);
-    fclose(fr);
+    fscanf(fp, "%d", &ch_state);
+    fclose(fp);
 
     snprintf(buff, bufflen, "%s", getIcon(arg, ch_state));
 }
@@ -42,20 +41,16 @@ void
 nm(Args *arg, char *buff, int bufflen)
 {
     unsigned long long int bytes_re, bytes_se;
-    char *template = "⬆ %.2fKi ⬇ %.2fKi";
+    char *fmt = "⬆ %.2fKi ⬇ %.2fKi";
 
     FILE *fr = fopen("/sys/class/net/eth0/statistics/rx_bytes", "r");
-    if (fr == NULL) {
-        return;
-    }
-
-    FILE *fs = fopen("/sys/class/net/eth0/statistics/tx_bytes", "r");
-    if (fs == NULL) {
-        return;
-    }
+    if (!fr) return;
 
     fscanf(fr, "%llu", &bytes_re);
     fclose(fr);
+
+    FILE *fs = fopen("/sys/class/net/eth0/statistics/tx_bytes", "r");
+    if (!fs) return;
 
     fscanf(fs, "%llu", &bytes_se);
     fclose(fs);
@@ -63,7 +58,7 @@ nm(Args *arg, char *buff, int bufflen)
     unsigned long long int reDiff = bytes_re - netReCache;
     unsigned long long int seDiff = bytes_se - netSeCache;
 
-    snprintf(buff, bufflen, template, TO_KBITS(seDiff), TO_KBITS(reDiff));
+    snprintf(buff, bufflen, fmt, TO_KBITS(seDiff), TO_KBITS(reDiff));
 
     netReCache = bytes_re;
     netSeCache = bytes_se;
@@ -72,27 +67,28 @@ nm(Args *arg, char *buff, int bufflen)
 void
 ut(Args *arg, char *buff, int bufflen)
 {
-        char *template = "%s%.2lfd";
+        char *fmt = "%s%.2lfd";
 
         struct sysinfo si;
         sysinfo(&si);
         double uptimeDays = (double) si.uptime / 60.0 / 60.0 / 24.0;
 
-        snprintf(buff, bufflen, template, getIcon(arg, uptimeDays), uptimeDays);
+        snprintf(buff, bufflen, fmt, getIcon(arg, uptimeDays), uptimeDays);
 }
 
 /* function implementations */
 void
 bm(Args *arg, char *buff, int bufflen)
 {
-        char *template = "%s  %d%%";
+        char *fmt = "%s  %d%%";
 
         FILE *bat0 = fopen("/sys/class/power_supply/BAT0/capacity", "r");
+        if (!bat0) return;
+
         int bat0p;
         fscanf(bat0, "%d", &bat0p);
         fclose(bat0);
-
-            snprintf(buff, bufflen, template, getIcon(arg, bat0p), bat0p);
+        snprintf(buff, bufflen, fmt, getIcon(arg, bat0p), bat0p);
 
         /* TODO handle multiple bats
         FILE *bat1 = fopen("/sys/class/power_supply/BAT1/capacity", "r");
@@ -108,8 +104,8 @@ nvpn(Args *arg, char *buff, int bufflen)
         char textbuff[1035];
         char vpnstatus[20];
 
-        FILE *fp;
-        fp = popen("/bin/nordvpn status", "r");
+        FILE *fp = popen("/bin/nordvpn status", "r");
+        if (!fp) return;
 
         while (fscanf(fp, " %1023s", textbuff) == 1) {
                 if (strcmp(textbuff, "Status:") == 0) {
@@ -128,12 +124,12 @@ nvpn(Args *arg, char *buff, int bufflen)
 void
 tm(Args *arg, char *buff, int bufflen)
 {
-        char *format = "%s%02d:%02d";
+        char *fmt = "%s%02d:%02d";
 
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
 
-        snprintf(buff, bufflen, format,
+        snprintf(buff, bufflen, fmt,
                  getIcon(arg, 0), t->tm_hour,
                  t->tm_min);
 }
@@ -141,12 +137,12 @@ tm(Args *arg, char *buff, int bufflen)
 void
 dm(Args *arg, char *buff, int bufflen)
 {
-        char *format = "%s%02d.%02d.%d";
+        char *fmt = "%s%02d.%02d.%d";
 
         time_t now = time(NULL);
         struct tm *t = localtime(&now);
 
-        snprintf(buff, bufflen, format,
+        snprintf(buff, bufflen, fmt,
                  getIcon(arg, 0), t->tm_mday,
                  t->tm_mon + 1, t->tm_year + 1900);
 }
@@ -156,7 +152,7 @@ mm(Args *arg, char *buff, int bufflen)
 {
         char buffer[1024] = "";
 
-        char *format = "%s%3.2fGb";
+        char *fmt = "%s%3.2fGb";
 
         int memTotal = 0;
         int memAvailable = 0;
@@ -176,7 +172,7 @@ mm(Args *arg, char *buff, int bufflen)
 
         float usage = (float) (memTotal - memAvailable) * 1e-6;
 
-        snprintf(buff, bufflen, format,
+        snprintf(buff, bufflen, fmt,
                  getIcon(arg, usage), usage);
 }
 
@@ -187,7 +183,7 @@ plm(Args *arg, char *buff, int bufflen)
         long int cpuWork = 0;
         int i = 0;
 
-        char *format = "%s%3.2f%%";
+        char *fmt = "%s%3.2f%%";
 
         char line[1][128];
 
@@ -212,29 +208,40 @@ plm(Args *arg, char *buff, int bufflen)
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
 
-        snprintf(buff, bufflen, format,
+        snprintf(buff, bufflen, fmt,
                  getIcon(arg, cpuLoad), cpuLoad);
 }
 
 void
 ptm(Args *arg, char *buff, int bufflen)
 {
-        int temperature = 0;
+        char *fmt = "%s%d°C";
 
-        char *format = "%s%d°C";
-        char *fallback = "";
+        int temperature = read_temp("/sys/class/hwmon/hwmon1/temp1_input");
 
-        FILE *file = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
-        if (file == NULL) {
-                file = fopen("/sys/class/hwmon/hwmon1/temp1_input", "r");
-                if (file == NULL) return;
-        }
+        snprintf(buff, bufflen, fmt, getIcon(arg, temperature), temperature);
+}
 
-        fscanf(file, "%d", &temperature);
-        fclose(file);
-        int temp = temperature / 1000;
+void
+gtm(Args *arg, char *buff, int bufflen)
+{
+    char *fmt = "%s%d°C";
+    int temperature = read_temp("/sys/class/hwmon/hwmon1/temp1_input");
 
-        snprintf(buff, bufflen, format, getIcon(arg, temp), temp);
+    snprintf(buff, bufflen, fmt, getIcon(arg, temperature), temperature);
+}
+
+int
+read_temp(char *path)
+{
+    int temperature = 0;
+
+    FILE *fp = fopen(path, "r");
+    if (!fp) return -1;
+    fscanf(fp, "%d", &temperature);
+    fclose(fp);
+
+    return temperature / 1000;
 }
 
 char *
