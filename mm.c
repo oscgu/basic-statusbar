@@ -1,7 +1,7 @@
+#include "mm.h"
+#include "util.h"
 #include <stdio.h>
 #include <string.h>
-#include "util.h"
-#include "mm.h"
 
 void
 mm(Args *arg, char *buff, int bufflen)
@@ -28,7 +28,5 @@ mm(Args *arg, char *buff, int bufflen)
 
         float usage = (float) (memTotal - memAvailable) * 1e-6;
 
-        snprintf(buff, bufflen, fmt,
-                 getIcon(arg, usage), usage);
+        snprintf(buff, bufflen, fmt, getIcon(arg, usage), usage);
 }
-

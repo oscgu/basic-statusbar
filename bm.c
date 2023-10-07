@@ -1,8 +1,9 @@
-#include <stdio.h>
-#include "util.h"
 #include "bm.h"
+#include "util.h"
+#include <stdio.h>
 
-void bm(Args *arg, char *buff, int bufflen)
+void
+bm(Args *arg, char *buff, int bufflen)
 {
         char *fmt = "%s  %d%%";
 
@@ -21,4 +22,3 @@ void bm(Args *arg, char *buff, int bufflen)
         fclose(bat1);
         */
 }
-

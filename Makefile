@@ -1,4 +1,4 @@
-CC = cc
+CC = clang
 CFLAGS = -Os -pedantic -Wall -Wno-deprecated-declarations -Wextra -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L
 LIBS = -lX11
 SRC = $(wildcard *.c)

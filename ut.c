@@ -1,9 +1,10 @@
+#include "ut.h"
+#include "util.h"
 #include <stdio.h>
 #include <sys/sysinfo.h>
-#include "util.h"
-#include "ut.h"
 
-void ut(Args *arg, char *buff, int bufflen)
+void
+ut(Args *arg, char *buff, int bufflen)
 {
         char *fmt = "%s%.2lfd";
 
@@ -13,4 +14,3 @@ void ut(Args *arg, char *buff, int bufflen)
 
         snprintf(buff, bufflen, fmt, getIcon(arg, uptimeDays), uptimeDays);
 }
-

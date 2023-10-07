@@ -15,13 +15,12 @@ getIcon(Args *args, int value)
 int
 read_temp(char *path)
 {
-    int temperature = 0;
+        int temperature = 0;
 
-    FILE *fp = fopen(path, "r");
-    if (!fp) return -1;
-    fscanf(fp, "%d", &temperature);
-    fclose(fp);
+        FILE *fp = fopen(path, "r");
+        if (!fp) return -1;
+        fscanf(fp, "%d", &temperature);
+        fclose(fp);
 
-    return temperature / 1000;
+        return temperature / 1000;
 }
-

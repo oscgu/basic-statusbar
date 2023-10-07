@@ -29,8 +29,11 @@ setroot(Display *dpy, Window root)
                 Module m = modules[i];
                 m.func(&m.args, text, LEN(text));
 
-                strcat(status, &delimitter);
-                strcat(status, text);
+                strncat(
+                    status, &delimitter,
+                    (MAX_STATUS_LEN - strlen(status) - strlen(&delimitter)));
+                strncat(status, text,
+                        (MAX_STATUS_LEN - strlen(status) - strlen(text)));
                 text[0] = '\0';
         }
         XStoreName(dpy, root, status);
@@ -42,8 +45,8 @@ main(void)
 {
         Display *dpy = XOpenDisplay(NULL);
         if (dpy == NULL) {
-            fprintf(stderr, "could not open display");
-            exit(-1);
+                fprintf(stderr, "could not open display");
+                exit(-1);
         }
 
         int screen = DefaultScreen(dpy);
@@ -56,4 +59,3 @@ main(void)
 
         XCloseDisplay(dpy);
 }
-

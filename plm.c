@@ -1,9 +1,9 @@
+#include "plm.h"
+#include "util.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "util.h"
-#include "plm.h"
 
 static long int cpuWorkCache = 0;
 static long int cpuTotalCache = 0;
@@ -40,7 +40,5 @@ plm(Args *arg, char *buff, int bufflen)
         cpuWorkCache = cpuWork;
         cpuTotalCache = cpuTotal;
 
-        snprintf(buff, bufflen, fmt,
-                 getIcon(arg, cpuLoad), cpuLoad);
+        snprintf(buff, bufflen, fmt, getIcon(arg, cpuLoad), cpuLoad);
 }
-

@@ -1,9 +1,10 @@
+#include "nvpn.h"
+#include "util.h"
 #include <stdio.h>
 #include <string.h>
-#include "util.h"
-#include "nvpn.h"
 
-void nvpn(Args *arg, char *buff, int bufflen)
+void
+nvpn(Args *arg, char *buff, int bufflen)
 {
         char textbuff[1035];
         char vpnstatus[20];
@@ -24,4 +25,3 @@ void nvpn(Args *arg, char *buff, int bufflen)
                 snprintf(buff, bufflen, "%s", getIcon(arg, 1));
         }
 }
-

@@ -1,6 +1,6 @@
-#include <stdio.h>
-#include "util.h"
 #include "ptm.h"
+#include "util.h"
+#include <stdio.h>
 
 void
 ptm(Args *arg, char *buff, int bufflen)
@@ -11,4 +11,3 @@ ptm(Args *arg, char *buff, int bufflen)
 
         snprintf(buff, bufflen, fmt, getIcon(arg, temperature), temperature);
 }
-

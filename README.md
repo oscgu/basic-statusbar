@@ -1,15 +1,16 @@
 # basic-statusbar
 
-A very basic statusbar for **[dwm](https://dwm.suckless.org)** I quickly threw together for my fresh install :)
+A very basic statusbar for **[dwm](https://dwm.suckless.org)**,
+I quickly threw together for my fresh install :)
 
 ![statusbar](https://github.com/oscgu/basic-statusbar/assets/94227101/7a24b018-8c61-4f9a-93d2-28d934d8516e)
 
-# Prerequisites
+## Prerequisites
 
 Make sure you have applied the libxft-bgra patch and this removed
-from ```drw.c``` for emojis to render
+from `drw.c` for emojis to render
 
-```
+```c
 FcBool iscol;
 
 if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
@@ -20,17 +21,17 @@ if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && isc
 }
 ```
 
-# Setting it up
+## Setting it up
 
 Enter the folder and  ```make``` to compile it
 
 Add this to your .xinitrc
 
-```
+```sh
 exec /basic-statusbar/statusbar
 ```
 
-# Where are the values from
+## Where are the values from
 
 | Module                      | Source                                  |
 | --------------------------- | ----------------------------------------|
