@@ -3,30 +3,22 @@
 #include <stdio.h>
 #include <string.h>
 
-void
-mm(Args *arg, char *buff, int bufflen)
-{
-        char buffer[1024] = "";
+void mm(Args *arg, char *buff, int bufflen) {
+    char buffer[256];
+    int memTotal = 0, memAvailable = 0;
+    FILE *file = fopen("/proc/meminfo", "r");
+    if (file == NULL) return;
 
-        char *fmt = "%s%4.2fGb";
-
-        int memTotal = 0;
-        int memAvailable = 0;
-
-        FILE *file = fopen("/proc/meminfo", "r");
-        if (file == NULL) return;
-
-        while (fscanf(file, " %1023s", buffer) == 1) {
-                if (strcmp(buffer, "MemTotal:") == 0) {
-                        fscanf(file, " %d", &memTotal);
-                }
-                if (strcmp(buffer, "MemAvailable:") == 0) {
-                        fscanf(file, " %d", &memAvailable);
-                }
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        if (strncmp(buffer, "MemTotal:", 9) == 0) {
+            sscanf(buffer + 9, "%d", &memTotal);
+        } else if (strncmp(buffer, "MemAvailable:", 13) == 0) {
+            sscanf(buffer + 13, "%d", &memAvailable);
         }
-        fclose(file);
+    }
+    fclose(file);
 
-        float usage = (float) (memTotal - memAvailable) * 1e-6;
+    float usage = (float)(memTotal - memAvailable) / 1024.0 / 1024.0; // Convert to GB
 
-        snprintf(buff, bufflen, fmt, getIcon(arg, usage), usage);
+    snprintf(buff, bufflen, "%s%4.2fGb", getIcon(arg, usage), usage);
 }
