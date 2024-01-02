@@ -7,6 +7,9 @@ OBJ = $(SRC:.c=.o)
 
 all: statusbar config.h
 
+install:
+	mv statusbar /usr/local/bin/statusbar
+
 statusbar: ${OBJ}
 	${CC} ${OBJ} ${LIBS} -o $@
 
