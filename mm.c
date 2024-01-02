@@ -8,7 +8,7 @@ mm(Args *arg, char *buff, int bufflen)
 {
         char buffer[1024] = "";
 
-        char *fmt = "%s%3.2fGb";
+        char *fmt = "%s%4.2fGb";
 
         int memTotal = 0;
         int memAvailable = 0;

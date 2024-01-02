@@ -15,7 +15,7 @@ plm(Args *arg, char *buff, int bufflen)
         long int cpuWork = 0;
         int i = 0;
 
-        char *fmt = "%s%3.2f%%";
+        char *fmt = "%s%6.2f%%";
 
         char line[1][128];
 
