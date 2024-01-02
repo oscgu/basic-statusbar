@@ -2,3 +2,6 @@ statusbar
 .cache
 *.o
 compile_commands.json
+*.txt
+*.out
+*.out.*
