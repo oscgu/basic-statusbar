@@ -1,6 +1,7 @@
 #include "arg.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +14,16 @@
 
 /* config file */
 #include "config.h"
+
+static volatile sig_atomic_t keep_running = 1;
+
+static void
+sig_handler(int _)
+{
+        printf("stopped");
+        (void) _;
+        keep_running = 0;
+}
 
 /* function implementations */
 void
@@ -43,6 +54,8 @@ setroot(Display *dpy, Window root)
 int
 main(void)
 {
+        signal(SIGINT, sig_handler);
+
         Display *dpy = XOpenDisplay(NULL);
         if (dpy == NULL) {
                 fprintf(stderr, "could not open display");
@@ -52,10 +65,11 @@ main(void)
         int screen = DefaultScreen(dpy);
         Window root = RootWindow(dpy, screen);
 
-        for (;;) {
+        while (keep_running) {
                 setroot(dpy, root);
                 sleep(1);
         }
-
         XCloseDisplay(dpy);
+
+        return EXIT_SUCCESS;
 }
