@@ -15,24 +15,25 @@ plm(Args *arg, char *buff, int bufflen)
         long int cpuWork = 0;
         int i = 0;
 
-        char *fmt = "%s%6.2f%%";
+        char *fmt = "%s%5.2f%%";
 
-        char line[1][128];
+        char line[128];
 
         FILE *file = fopen("/proc/stat", "r");
         if (file == NULL) return;
 
-        fgets(line[0], 100, file);
-        line[0][strlen(line[0]) - 1] = '\0';
+        fgets(line, sizeof(line), file);
         fclose(file);
 
-        char *token = strtok(line[0], " ");
+        line[strlen(line) - 1] = '\0';
 
-        while (token != NULL) {
-                i++;
+        char *token = strtok(line, " ");
+        while (token != NULL && i < 7) {
+                cpuTotal += atoi(token);
+                if (i < 4) cpuWork += atoi(token);
+
                 token = strtok(NULL, " ");
-                if (i > 0 && i < 7) { cpuTotal += atoi(token); }
-                if (i > 0 && i < 4) { cpuWork += atoi(token); }
+                i++;
         }
         float cpuLoad = fabs((float) (cpuWork - cpuWorkCache) /
                              (float) (cpuTotal - cpuTotalCache) * 100);

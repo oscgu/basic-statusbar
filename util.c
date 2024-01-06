@@ -9,7 +9,7 @@ getIcon(Args *args, int value)
                 if (args->vals[i] > value) { return args->icons[i]; }
         }
 
-        return args->icons[i - 1];
+        return args->icons[args->len - 1];
 }
 
 int
