@@ -1,14 +1,11 @@
-#include "bcm.h"
-#include "bm.h"
 #include "dm.h"
 #include "gtm.h"
 #include "mm.h"
-#include "nvpn.h"
 #include "plm.h"
 #include "ptm.h"
+#include "script.h"
 #include "tm.h"
 #include "ut.h"
-#include "script.h"
 
 /* structs */
 typedef struct {
@@ -36,7 +33,7 @@ static Module modules[] = {
 };
 
 /* char between modules */
-static char delimitter = ' ';
+static char delimiter[] = " ";
 
 /*  */
 static int refresh_interval_s = 1;

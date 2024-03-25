@@ -7,43 +7,47 @@
 #include <unistd.h>
 
 /* macros */
-#define LEN(X)         (sizeof X / sizeof X[0])
-#define MAX_STATUS_LEN 256
-#define TEXT_LEN       24
+#define LEN(X) (sizeof X / sizeof X[0])
+
+/* In theory max 8 modules allowed */
+#define MAX_STATUS_LEN      256
+#define MAX_MODULE_TEXT_LEN 32
 
 /* config file */
 #include "config.h"
 
 static volatile sig_atomic_t keep_running = 1;
+static Display *dpy;
 
 static void
-sig_handler(int _)
+sig_handler(int sig)
 {
-        puts("stopped");
-        (void) _;
+        puts("stopping statusbar\n");
+        (void) sig;
         keep_running = 0;
+        XCloseDisplay(dpy);
 }
 
 /* function implementations */
-void
+static void
 setroot(Display *dpy, Window root)
 {
-        char status[MAX_STATUS_LEN];
-        char text[TEXT_LEN];
-
-        Module mfirst = modules[0];
-        mfirst.func(&mfirst.args, status, LEN(status));
+        char status[MAX_STATUS_LEN] = {0};
+        char text[MAX_MODULE_TEXT_LEN];
 
         unsigned int i;
-        for (i = 1; i < LEN(modules); i++) {
+        for (i = 0; i < LEN(modules); i++) {
                 Module m = modules[i];
-                m.func(&m.args, text, LEN(text));
+                m.func(&m.args, text, LEN(text) -1);
 
-                strncat(
-                    status, &delimitter,
-                    (MAX_STATUS_LEN - strlen(status) - strlen(&delimitter)));
-                strncat(status, text,
-                        (MAX_STATUS_LEN - strlen(status) - strlen(text)));
+                if (i > 0) {
+                        strncat(status, delimiter,
+                                MAX_STATUS_LEN - strlen(status) - 1);
+                }
+
+                strncat(status, text, MAX_STATUS_LEN - strlen(status) - 1);
+
+                /* clear text buffer */
                 text[0] = '\0';
         }
         XStoreName(dpy, root, status);
@@ -53,11 +57,11 @@ setroot(Display *dpy, Window root)
 int
 main(void)
 {
-        signal(SIGINT, sig_handler);
+        signal(SIGINT | SIGKILL, sig_handler);
 
-        Display *dpy = XOpenDisplay(NULL);
+        dpy = XOpenDisplay(NULL);
         if (dpy == NULL) {
-                fprintf(stderr, "could not open display");
+                fprintf(stderr, "could not open display\n");
                 exit(-1);
         }
 
@@ -68,7 +72,6 @@ main(void)
                 setroot(dpy, root);
                 sleep(refresh_interval_s);
         }
-        XCloseDisplay(dpy);
 
-        return EXIT_SUCCESS;
+        return -1;
 }
