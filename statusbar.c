@@ -1,4 +1,3 @@
-#include "arg.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <signal.h>
@@ -20,7 +19,7 @@ static volatile sig_atomic_t keep_running = 1;
 static void
 sig_handler(int _)
 {
-        printf("stopped");
+        puts("stopped");
         (void) _;
         keep_running = 0;
 }
@@ -67,7 +66,7 @@ main(void)
 
         while (keep_running) {
                 setroot(dpy, root);
-                sleep(1);
+                sleep(refresh_interval_s);
         }
         XCloseDisplay(dpy);
 

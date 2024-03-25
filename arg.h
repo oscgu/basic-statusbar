@@ -3,6 +3,6 @@
 typedef struct {
         int len;
         int vals[5];
-        char icons[10][20];
+        char icons[10][40];
 } Args;
 #endif // ARG_H
