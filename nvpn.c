@@ -8,17 +8,17 @@ nvpn(Args *arg, char *buff, int bufflen)
 {
         char textbuff[19];
         char country[20] = {0};
-        char vpnstatus[40];
+        char vpnstatus[11];
 
         FILE *fp = popen("/bin/nordvpn status", "r");
         if (!fp) return;
 
         while (fscanf(fp, " %18s", textbuff) == 1) {
                 if (strcmp(textbuff, "Status:") == 0) {
-                        fscanf(fp, " %s", vpnstatus);
+                        fscanf(fp, " %10s", vpnstatus);
                 }
                 if (strcmp(textbuff, "Country:") == 0) {
-                        fscanf(fp, " %s", country);
+                        fscanf(fp, " %19s", country);
                 }
         }
         pclose(fp);
