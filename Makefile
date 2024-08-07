@@ -1,7 +1,7 @@
 CC = cc
 
 CFLAGS = -Os -std=c99 -pedantic -Wall -Wextra -Werror -Wno-deprecated-declarations -Wextra -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200810L
-LIBS = -lX11
+LIBS = -lX11 -lpulse
 LDFLAGS = ${LIBS}
 
 SRC = $(wildcard *.c)

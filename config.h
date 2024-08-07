@@ -6,6 +6,8 @@
 #include "script.h"
 #include "tm.h"
 #include "ut.h"
+#include "nvpn.h"
+#include "vm.h"
 
 /* structs */
 typedef struct {
@@ -18,14 +20,15 @@ typedef struct {
  *
  */
 static Module modules[] = {
-    //{ nvpn, { 2, {1, 2}, { "", "" }}},
+    { nvpn, { 2, {1, 2}, { "", "" }}},
     //{ bcm, {2, {1, 2}, { "", "" }}},
     //{ bm,   { 4, {25, 50, 90},  { "", "", "", "" }}},
-    {script, {0, {0}, {"/home/og/script.sh"}}},
+    //{script, {0, {0}, {"/home/og/script.sh"}}},
     {ut, {1, {0}, {" "}}},
+    {vm, {3, {1, 50}, {"󰝟 ", "󰖀 ", "󰕾 "}}},
     //{nm, {.minArgs.icon = ""}, 1},
-    {ptm, {1, {0}, {" "}}},
-    {gtm, {1, {0}, {"󰢮  "}}},
+    // {ptm, {1, {0}, {" "}}},
+    // {gtm, {1, {0}, {"󰢮 "}}},
     {plm, {1, {0}, {" "}}},
     {mm, {1, {0}, {"󰍛 "}}},
     {tm, {1, {0}, {" "}}},
