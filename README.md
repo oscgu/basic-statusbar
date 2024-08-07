@@ -20,6 +20,7 @@
     - [BatteryModule](#batterymodule)
     - [BatteryChargingMode](#batterychargingmode)
     - [Script](#script)
+    - [VolumeModule](#volumemodule)
 <!--toc:end-->
 
 A very basic statusbar for **[dwm](https://dwm.suckless.org)**,
@@ -40,6 +41,7 @@ I quickly threw together for my fresh install :)
 ## Libs
 
 - libx11
+- libpulse
 
 ### Configure
 
@@ -166,3 +168,12 @@ Shows the current charging state
 
 Runs a script and puts the output into the status.
 Make sure you dont exceed the maximum module text length of 32 chars.
+
+### VolumeModule
+
+| Shortname    | Source     |
+| ------------ | ---------- |
+| [vm](./vm.c) | pulseaudio |
+
+Gets the volume of the current default device (idx: 0).
+Make sure you are using PulseAudio.
