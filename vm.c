@@ -11,8 +11,7 @@
 static pa_volume_t volume;
 
 static void
-get_sink_volume_callback(pa_context *c __attribute__((unused)),
-                         const pa_sink_info *i, int is_last,
+get_sink_volume_callback(pa_context *c, const pa_sink_info *i, int is_last,
                          void *userdata __attribute__((unused)))
 {
         if (is_last) return;
